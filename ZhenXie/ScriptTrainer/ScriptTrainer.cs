@@ -229,11 +229,21 @@ namespace ScriptTrainer
         }
 
         string MoneyCount = "1000";
-        string ItemID = "1";
+        private float OldSpeed = -1;
+        private float OldWalkSpeed = -1;
         /// <summary>
         /// 基础功能
         /// </summary>
         /// <param name="tableRect"></param>
+        
+        private void WriteTips(params string[] values)
+        {
+            for(int i = 0; i < values.Length; i++)
+            {
+                GetItemTips.instance.text.text = values[i];
+                GetItemTips.instance.text.gameObject.SetActive(true);
+            }
+        }
         private void BasicScriptsTable(Rect TableRect)
         {
             ShuXing player = ShuXing.instance;
@@ -250,27 +260,29 @@ namespace ScriptTrainer
                             BagPanel bag = BagPanel.instance;
                             XmGUI.Label("金钱", 40, 40);
                             MoneyCount = XmGUI.TextField(MoneyCount);
-                            if (XmGUI.Button("增加金钱"))
+                            if (XmGUI.Button("增加金钱", 80, 40))
                             {
                                 bag.AddMoney(Script.CheckIsInt(MoneyCount));
                             }
+                            XmGUI.Label(" ", 10, 50);
                         }
                         {
                             XmGUI.Label("技能点", 40, 40);
                             var skill = XmGUI.TextField(player.skill.ToString());
                             player.skill = Script.CheckIsInt(skill);
+                            XmGUI.Label(" ", 10, 50);
                         }
                         {
-                            if (XmGUI.Button("状态回满"))
+                            if (XmGUI.Button("状态回满",80,40))
                             {
-                                BloodStick.instance.currentHp = BloodStick.instance.maxHP;
-                                MpStcik.instance.currentMp = MpStcik.instance.maxMp;
+                                BloodStick.instance.AddBlood(BloodStick.instance.maxHP);
+                                MpStcik.instance.AddMp((int)MpStcik.instance.maxMp);
                             }
                         }
 
                         XmGUI.hr();
                         {
-                            if(XmGUI.Button("无敌"))
+                            if (XmGUI.Button("无敌", 80, 40))
                             {
                                 bool hp = !BloodStick.instance.wuDi;
                                 BloodStick.instance.wuDi = hp;
@@ -278,52 +290,137 @@ namespace ScriptTrainer
                                 if (hp)
                                 {
                                     MpStcik.instance.NOKouLan();
-                                    GetItemTips.instance.text.text = "无敌已开启";
-                                    GetItemTips.instance.text.gameObject.SetActive(true);
+                                    WriteTips("无敌已开启");
                                 }
                                 else
                                 {
                                     MpStcik.instance.CanKouLan();
-                                    GetItemTips.instance.text.text = "无敌已关闭";
-                                    GetItemTips.instance.text.gameObject.SetActive(true);
+                                    WriteTips("无敌已关闭");
                                 }
+                            }
+
+                        }
+                        {
+                            XmGUI.Label(" ", 10, 50);
+                        }
+                        {
+                            if (XmGUI.Button("解锁当前地图", 80, 40))
+                            {
                                 
+                                GameManager xx = GameManager.instance;
+
+                                Vector3 point = xx.Player.transform.position;
+
+                                UnlockMapMask(point);
 
                             }
                         }
-                        //{
-                        //    XmGUI.Label("攻击速度", 75, 40);
-                        //    var ItemText = XmGUI.TextField(player.playerParameter.EXTRA_ATTACK_SPEED.ToString());
-                        //    player.playerParameter.EXTRA_ATTACK_SPEED = Script.CheckIsFloat(ItemText);
-                        //}
-                        //{
-                        //    XmGUI.Label("生命值");
+                        XmGUI.hr();
+                        
+                        {
+                            XmGUI.Label("移速修改", 60, 40);
+                            XmGUI.Label(" ", 10, 50);
+                        }
+                        {
+                            if (XmGUI.Button("1.5倍移速", 80, 40))
+                            {
+                                if (OldSpeed == -1)
+                                {
+                                    OldSpeed = PlayerAnimator.instance.RunSpeed;
+                                    OldWalkSpeed = PlayerAnimator.instance.WalkSpeed;
 
-                        //    if (XmGUI.Button("-100"))
-                        //    {
-                        //        player.attrChange.SubMaxHp(100);
-                        //    }
-                        //    XmGUI.Label(player.playerParameter.MAX_HP.ToString());
+                                    PlayerAnimator.instance.RunSpeed = (float)(OldSpeed * 1.5);
+                                    PlayerAnimator.instance.WalkSpeed = (float)(OldWalkSpeed * 1.5);
+                                }
+                                else
+                                {
+                                    PlayerAnimator.instance.RunSpeed = (float)(OldSpeed * 1.5);
+                                    PlayerAnimator.instance.WalkSpeed = (float)(OldWalkSpeed * 1.5);
+                                }
+                            }
+                            XmGUI.Label(" ", 10, 50);
+                        }
+                        {
+                            if (XmGUI.Button("2倍移速", 80, 40))
+                            {
+                                if (OldSpeed == -1)
+                                {
+                                    OldSpeed = PlayerAnimator.instance.RunSpeed;
+                                    OldWalkSpeed = PlayerAnimator.instance.WalkSpeed;
+                                    PlayerAnimator.instance.RunSpeed = OldSpeed * 2;
+                                    PlayerAnimator.instance.WalkSpeed = OldWalkSpeed * 2;
+                                }
+                                else
+                                {
+                                    PlayerAnimator.instance.RunSpeed = OldSpeed * 2;
+                                    PlayerAnimator.instance.WalkSpeed = OldWalkSpeed * 2;
+                                }
+                            }
+                            XmGUI.Label(" ", 10, 50);
+                        }
+                        {
+                            if (XmGUI.Button("3倍移速", 80, 40))
+                            {
+                                if (OldSpeed == -1)
+                                {
+                                    OldSpeed = PlayerAnimator.instance.RunSpeed;
+                                    OldWalkSpeed = PlayerAnimator.instance.WalkSpeed;
+                                    PlayerAnimator.instance.RunSpeed = OldSpeed * 3;
+                                    PlayerAnimator.instance.WalkSpeed = OldWalkSpeed * 3;
+                                }
+                                else
+                                {
+                                    PlayerAnimator.instance.RunSpeed = OldSpeed * 3;
+                                    PlayerAnimator.instance.WalkSpeed = OldWalkSpeed * 3;
+                                }
+                            }
+                            XmGUI.Label(" ", 10, 50);
+                        }
+                        {
+                            if (XmGUI.Button("还原移速", 80, 40))
+                            {
+                                if (OldSpeed != -1)
+                                {
+                                    PlayerAnimator.instance.RunSpeed = OldSpeed;
+                                    PlayerAnimator.instance.WalkSpeed = OldWalkSpeed;
+                                }
+                            }
+                            XmGUI.Label(" ", 10, 50);
+                        }
 
-                        //    if (XmGUI.Button("+100"))
-                        //    {
-                        //        player.attrChange.AddMaxHp(100);
-                        //    }
-                        //}
-                        //XmGUI.hr();
-                        //{
-                        //    ItemID = XmGUI.TextField(ItemID);
-                        //    ItemCount = XmGUI.TextField(ItemCount);
-                        //    if (XmGUI.Button("获取技能"))
-                        //    {
-                        //        BagMgr bag = BagMgr.instance;
-                        //        Item itenmInfo = BaseManager<GameDateMgr>.GetInstance().GetItenmInfo(int.Parse(ItemID));
-                        //        int.TryParse(ItemCount, out int count);
-                        //        bag.PickUpItem(itenmInfo, count);
-                        //    }
-                        //}
+                        XmGUI.hr();
 
-
+                        {
+                            XmGUI.Label("时间修改", 60, 40);
+                            XmGUI.Label(" ", 10, 50);
+                        }
+                        {
+                            GameTime time = GameTime.instance;
+                            if (XmGUI.Button("跳过1小时", 80, 40))
+                            {
+                                time.KuaiJin();
+                                WriteTips("已快进1小时");
+                            }
+                            XmGUI.Label(" ", 10, 50);
+                            if (XmGUI.Button("跳过1天", 80, 40))
+                            {
+                                time.Hour = 24;
+                                time.KuaiJin();
+                                WriteTips("已快进1天");
+                            }
+                            XmGUI.Label(" ", 10, 50);
+                            if (XmGUI.Button("暂停时间", 80, 40))
+                            {
+                                time.StopTime();
+                                WriteTips("已暂停时间");
+                            }
+                            XmGUI.Label(" ", 10, 50);
+                            if (XmGUI.Button("恢复时间", 80, 40))
+                            {
+                                time.OverXZ();
+                                WriteTips("已恢复时间");
+                            }
+                        }
                     }
                     GUILayout.EndHorizontal();
 
@@ -333,6 +430,59 @@ namespace ScriptTrainer
             GUILayout.EndArea();
         }
 
+        private void UnlockMapMask(Vector3 point)
+        {
+            MapAll map = MapAll.instance;
+
+            GameObject game = new GameObject();
+            game.transform.position = point;
+
+            if (map.order == 1)
+            {
+                var size = map.map1.scratch.brushSize;
+                map.map1.scratch.brushSize = 1800;
+                map.map1.JieSuoMask(game);
+                map.map1.scratch.brushSize = size;
+            }
+            else if (map.order == 2)
+            {
+                var size = map.map2.scratch.brushSize;
+                map.map2.scratch.brushSize = 1800;
+                map.map2.JieSuoMask(game);
+                map.map2.scratch.brushSize = size;
+            }
+            else if (map.order == 3)
+            {
+                var size = map.map3.scratch.brushSize;
+                map.map3.scratch.brushSize = 1800;
+                map.map3.JieSuoMask(game);
+                map.map3.scratch.brushSize = size;
+            }
+            else if (map.order == 4)
+            {
+                var size = map.map4.scratch.brushSize;
+                map.map4.scratch.brushSize = 1800;
+                map.map4.JieSuoMask(game);
+                map.map4.scratch.brushSize = size;
+            }
+            else if (map.order == 5)
+            {
+                var size = map.map5.scratch.brushSize;
+                map.map5.scratch.brushSize = 1800;
+                map.map5.JieSuoMask(game);
+                map.map5.scratch.brushSize = size;
+            }
+
+            //for(int i = -10; i < 11; i++)
+            //{
+            //    for (int j = -10; j < 11; i++)
+            //    {
+            //        game.transform.position = new Vector3((float)i * 20 + point.x, (float)j * 20 + point.y);
+            //        map2.JieSuoMask(game);
+            //    }
+            //}
+
+        }
         private string PropsSearch = "";
         private string ItemCount = "1";
         /// <summary>
