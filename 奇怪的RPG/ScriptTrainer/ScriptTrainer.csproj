@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{592E4AA6-8DC6-4E1C-8BF7-04AC825D196F}</ProjectGuid>
+    <ProjectGuid>{56B71F4D-F911-4369-87C0-F13AD81535C2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ScriptTrainer</RootNamespace>
@@ -31,28 +31,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\BepInEx\core\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="0Harmony20">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\BepInEx\core\0Harmony20.dll</HintPath>
+      <HintPath>..\Library\0Harmony20.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\Library\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>..\Library\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\BepInEx\core\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\Library\BepInEx.Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BepInEx.Preloader">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\BepInEx\core\BepInEx.Preloader.dll</HintPath>
+    <Reference Include="Framework.Runtime">
+      <HintPath>..\Library\Framework.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -63,48 +59,62 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unity.ResourceManager">
+      <HintPath>..\Library\Unity.ResourceManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\Library\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>..\Library\UnityEngine.AssetBundleModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\Library\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\Library\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>..\Library\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\Library\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\Library\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>F:\SteamLibrary\steamapps\common\镇邪 Zhenxie\ZX35\ZX_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\Library\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Script.cs" />
+    <Compile Include="ItemWindows.cs" />
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="ScriptPatch.cs" />
+    <Compile Include="Scripts.cs" />
     <Compile Include="ScriptTrainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\RayBlocker.cs" />
-    <Compile Include="UI\window.cs" />
-    <Compile Include="UI\windowsStat.cs" />
-    <Compile Include="UI\XmGUI.cs" />
-    <Compile Include="UI\XmUIStyle.cs" />
+    <Compile Include="UnityGameUI\Extensions.cs" />
+    <Compile Include="UnityGameUI\TooltipGUI.cs" />
+    <Compile Include="UnityGameUI\UIControls.cs" />
+    <Compile Include="UnityGameUI\UINavigation.cs" />
+    <Compile Include="UnityGameUI\UIWindows.cs" />
+    <Compile Include="UnityGameUI\WindowDragHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UnityGameUI\README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

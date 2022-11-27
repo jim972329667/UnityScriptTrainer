@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace ScriptTrainer
 {
@@ -130,7 +131,7 @@ namespace ScriptTrainer
         {
 
             // 主窗口居中
-            int num = Mathf.Min(Screen.width, 740);
+            int num = Mathf.Min(Screen.width, 800);
             int num2 = (Screen.height < 400) ? Screen.height : (450);
             int num3 = Mathf.RoundToInt((Screen.width - num) / 2f);
             int num4 = Mathf.RoundToInt((Screen.height - num2) / 2f);
@@ -231,6 +232,7 @@ namespace ScriptTrainer
         string MoneyCount = "1000";
         private float OldSpeed = -1;
         private float OldWalkSpeed = -1;
+        private string LianShi = "0";
         /// <summary>
         /// 基础功能
         /// </summary>
@@ -313,6 +315,122 @@ namespace ScriptTrainer
 
                                 UnlockMapMask(point);
 
+                            }
+                        }
+                        {
+                            XmGUI.Label(" ", 10, 50);
+                        }
+                        {
+                            LianShi = XmGUI.TextField(LianShi);
+                            int type = Script.CheckIsInt(LianShi);
+                            
+                            if (XmGUI.Button("获得炼尸", 80, 40))
+                            {
+                                bool shiwang = false;
+                                GameObject lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/LianShi");
+                                if (type == 0)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/LianShi");
+                                }
+                                else if (type == 1)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/LianShi-Qc");
+                                }
+                                else if (type == 2)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/LianShi-QcGG");
+                                }
+                                else if (type == 3)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/ShiWang");
+                                    shiwang = true;
+                                }
+                                else if (type == 4)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/ShiWang-Nan");
+                                    shiwang = true;
+                                }
+                                else if (type == 5)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/ShiWang-nv");
+                                    shiwang = true;
+                                }
+                                else if (type == 6)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/LianShi-HuYao");
+                                }
+                                else if (type == 7)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/ShiWang-HuYao");
+                                    shiwang = true;
+                                }
+                                else if (type == 8)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/LianShi-MeiNv");
+                                }
+                                else if (type == 9)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/ShiWang-MeiNv");
+                                    shiwang = true;
+                                }
+                                else if (type == 10)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/LianShi-MeiNv2");
+                                }
+                                else if (type == 11)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/ShiWang-MeiNv2");
+                                    shiwang = true;
+                                }
+                                else if (type == 12)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/ShiWang-4");
+                                    shiwang = true;
+                                }
+                                else if (type == 13)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/LianShi-MengYan");
+                                }
+                                else if (type == 14)
+                                {
+                                    lian = BaseManager<ResMgr>.GetInstance().Load<GameObject>("Prefab/LianShi/ShiWang-MengYan");
+                                    shiwang = true;
+
+                                    GameObject xxx = BaseManager<PoorMgr>.GetInstance().GetObj("Prefab/Villager/Fang/NpcSt_F");
+                                }
+                                else
+                                {
+                                    WriteTips("未知养尸编号！");
+                                    return;
+                                }
+                                if (shiwang)
+                                {
+                                    lian.GetComponent<LianShi>().ShiWangChuShi();
+                                }
+                                else
+                                {
+                                    lian.GetComponent<LianShi>().dengji = 1;
+                                    lian.GetComponent<LianShi>().chengZhang = 0;
+                                    if (lian.GetComponent<LianShi>().orderType == 0)
+                                    {
+                                        lian.GetComponent<LianShi>().xingYun = UnityEngine.Random.Range(30, 51);
+                                        lian.GetComponent<LianShi>().health.ChangedMaxHp(lian.GetComponent<LianShi>().xingYun / 10 * 30);
+                                        lian.GetComponent<LianShi>().attackZ.ChangeHit(lian.GetComponent<LianShi>().xingYun / 10 * 3);
+                                    }
+                                    else if (lian.GetComponent<LianShi>().orderType == 1)
+                                    {
+                                        lian.GetComponent<LianShi>().xingYun = UnityEngine.Random.Range(15, 36);
+                                        lian.GetComponent<LianShi>().health.ChangedMaxHp(lian.GetComponent<LianShi>().xingYun / 10 * 55);
+                                        lian.GetComponent<LianShi>().attackZ.ChangeHit(lian.GetComponent<LianShi>().xingYun / 10 * 2);
+                                    }
+                                    else if (lian.GetComponent<LianShi>().orderType == 2)
+                                    {
+                                        lian.GetComponent<LianShi>().xingYun = UnityEngine.Random.Range(15, 36);
+                                        lian.GetComponent<LianShi>().health.ChangedMaxHp(lian.GetComponent<LianShi>().xingYun / 10 * 30);
+                                        lian.GetComponent<LianShi>().attackZ.ChangeHit(lian.GetComponent<LianShi>().xingYun / 10 * 4);
+                                    }
+                                }
+                                LianShiAll.instance.GetLiamShi(lian);
                             }
                         }
                         XmGUI.hr();
@@ -495,7 +613,7 @@ namespace ScriptTrainer
 
             GUILayout.BeginArea(TableRect);
             {
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, false, GUILayout.Width(700), GUILayout.Height(400));
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, false, GUILayout.Width(760), GUILayout.Height(400));
                 {
                     GUILayout.BeginHorizontal(new GUIStyle { alignment = TextAnchor.UpperLeft });
                     {
@@ -520,11 +638,11 @@ namespace ScriptTrainer
                                         Iteminfo info = new Iteminfo
                                         {
                                             id = items.info[i].id,
-                                            consnum = items.info[i].consume,
+                                            consnum = 0,
                                             num = Script.CheckIsInt(ItemCount),
                                             dengji1 = items.info[i].dengji1,
                                             dengji2 = items.info[i].dengji2,
-                                            fumo = items.info[i].fumo
+                                            fumo = items.info[i].fumo,
                                         };
                                         bag.SetItem(info);
                                     }
@@ -536,7 +654,7 @@ namespace ScriptTrainer
                                 {
                                     Iteminfo info = new Iteminfo {
                                         id = items.info[i].id,
-                                        consnum = items.info[i].consume,
+                                        consnum = 0,
                                         num = Script.CheckIsInt(ItemCount),
                                         dengji1 = items.info[i].dengji1,
                                         dengji2 = items.info[i].dengji2,
@@ -559,21 +677,19 @@ namespace ScriptTrainer
             GUILayout.EndArea();
         }
 
-        string WeaponSearch = "";
+        //string WeaponSearch = "";
         /// <summary>
         /// 获取武器
         /// </summary>
         /// <param name="TableRect"></param>
         //private void GetWeaponTable(Rect TableRect)
         //{
-        //    PlayerAnimControl player = PlayerAnimControl.instance;
-
         //    GUILayout.BeginArea(TableRect);
         //    {
         //        scrollPosition = GUILayout.BeginScrollView(scrollPosition, false, false, GUILayout.Width(700), GUILayout.Height(400));
         //        {
 
-                    
+
         //            GUILayout.BeginHorizontal(new GUIStyle { alignment = TextAnchor.UpperLeft });
         //            {
         //                XmGUI.Title("获取武器");
@@ -611,7 +727,7 @@ namespace ScriptTrainer
         //                        }
         //                    }
 
-                            
+
 
         //                    num++;
         //                    if (num > 7)
