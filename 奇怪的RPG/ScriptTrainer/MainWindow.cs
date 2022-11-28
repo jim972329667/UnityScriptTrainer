@@ -26,7 +26,6 @@ namespace ScriptTrainer
         // UI
         public static AssetBundle testAssetBundle = null;
         public static GameObject canvas = null;
-        private static bool isVisible = false;
         private static GameObject uiPanel = null;
         private static readonly int width = Mathf.Min(Screen.width, 740);
         private static readonly int height = (Screen.height < 400) ? Screen.height : (450);
@@ -61,6 +60,7 @@ namespace ScriptTrainer
                 }
             }
         }
+
         #endregion
 
         internal static GameObject Create(string name)
@@ -140,23 +140,36 @@ namespace ScriptTrainer
                 #region[添加功能按钮]
                 AddH3("常用功能：", BasicScripts);
                 {
-                    AddButton("添加现金", BasicScripts, () =>
+                    AddButton("金币倍率", BasicScripts, () =>
                     {
                         Scripts.AddMoney();
-                    });
-                    AddButton("添加全部物品", BasicScripts, () =>
-                    {
-                        Scripts.AddAllItem();
                     });
                     AddButton("添加死亡次数", BasicScripts, () =>
                     {
                         Scripts.AddDeadNum();
+                    });
+                    AddButton("切歌", BasicScripts, () =>
+                    {
+                        Scripts.ChangeAnthorMusic();
                     });
                     hr();
                     AddToggle("无需材料购买", 150, BasicScripts, (bool state) =>
                     {
                         Scripts.RemoveNeedMaterials(state);
                     });
+                    AddToggle("无限CD", 150, BasicScripts, (bool state) =>
+                    {
+                        Scripts.SkillCd(state);
+                    });
+                    AddToggle("无敌", 150, BasicScripts, (bool state) =>
+                    {
+                        Scripts.WuDi(state);
+                    });
+                    AddToggle("自动拾取掉落物", 150, BasicScripts, (bool state) =>
+                    {
+                        Scripts.AutoPickItem(state);
+                    });
+                    hr(10);
                 }
 
                 #endregion
@@ -188,13 +201,12 @@ namespace ScriptTrainer
                 Navigation[] nav = new Navigation[]
                 {
                     new Navigation("BasicScripts","基础功能", BasicScripts, true),
-                    new Navigation("ItemScripts", "获取物品", ItemScripts, false),
+                    new Navigation("ItemScripts", "随行商店", ItemScripts, false),
                 };
 
                 UINavigation.Initialize(nav, NavPanel);
 
                 #endregion
-                isVisible = true;
 
                 //log.LogMessage("Complete!");
                 canvas.SetActive(optionToggle);
@@ -207,7 +219,7 @@ namespace ScriptTrainer
         {
             string backgroundColor = "#8C9EFFFF";
             Vector3 localPosition = new Vector3(elementX, elementY, 0);
-            elementX += 90;
+            elementX += 110;
 
             GameObject button = UIControls.createUIButton(panel, backgroundColor, Text, action, localPosition);
 
@@ -215,7 +227,7 @@ namespace ScriptTrainer
             button.AddComponent<Shadow>().effectColor = UIControls.HTMLString2Color("#000000FF");   // 添加阴影
             button.GetComponent<Shadow>().effectDistance = new Vector2(2, -2);              // 设置阴影偏移
             button.GetComponentInChildren<Text>().fontSize = 14;     // 设置字体大小           
-            button.GetComponent<RectTransform>().sizeDelta = new Vector2(80, 30);    // 设置按钮大小
+            button.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 30);    // 设置按钮大小
 
 
             return button;
@@ -227,7 +239,7 @@ namespace ScriptTrainer
             // 计算x轴偏移
             elementX += width / 2 - 30;
 
-            Sprite toggleBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#3E3E42FF"));
+            Sprite toggleBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture(ColorUtility.ToHtmlStringRGBA(Color.white)));
             Sprite toggleSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#18FFFFFF"));
             GameObject uiToggle = UIControls.createUIToggle(panel, toggleBgSprite, toggleSprite);
             uiToggle.GetComponentInChildren<Text>().color = Color.white;
@@ -361,7 +373,7 @@ namespace ScriptTrainer
         }
         #endregion
 
-
+        
 
         #endregion
 

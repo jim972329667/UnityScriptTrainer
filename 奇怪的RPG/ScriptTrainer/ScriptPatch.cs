@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
 namespace ScriptTrainer
@@ -8,9 +10,11 @@ namespace ScriptTrainer
     {
         #region[全局参数]
         public static bool IsRemoveNeedMaterials = false;
+        public static bool IsDropMoney = false;
+        public static float DropMoneyRate = 1;
         #endregion
 
-        [HarmonyPatch(typeof(GameManager), nameof(GameManager.BuyItem))]
+        [HarmonyPatch(typeof(GameManager), "BuyItem")]
         public class GameManagerOverridePatch_BuyItem
         {
             [HarmonyPrefix]
@@ -28,9 +32,24 @@ namespace ScriptTrainer
                             Singleton<BagManager>.Instance.AddItem(key, num, true);
                     }
                 }
+                if(itemInfo.itemType == ItemType.Material)
+                {
+                    Singleton<BagManager>.Instance.RemoveItem(GameConst.MoneyItemId, ItemWindow.BuyPrice(itemInfo.quality) * buyNum, true);
+                }
             }
 
         }
-
+        [HarmonyPatch(typeof(DropManager), "DropMoney")]
+        public class DropManagerOverridePatch_DropMoney
+        {
+            [HarmonyPrefix]
+            public static void Prefix(ref int moneyNum)
+            {
+                if (IsDropMoney)
+                {
+                    moneyNum = (int)(DropMoneyRate * moneyNum);
+                }
+            }
+        }
     }
 }

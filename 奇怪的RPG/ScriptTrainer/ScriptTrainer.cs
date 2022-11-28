@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using HarmonyLib;
 using System;
+using System.Threading;
 using UnityEngine;
 
 namespace ScriptTrainer
@@ -30,7 +31,6 @@ namespace ScriptTrainer
             ShowCounter = Config.Bind("修改器快捷键", "Key", new KeyboardShortcut(KeyCode.F9));
             Debug.Log("脚本已启动");
             mw = new MainWindow();
-
         }
 
         public void Update()
@@ -43,6 +43,7 @@ namespace ScriptTrainer
             // 切换UI开关
             //if (ShowCounter.IsDown())
             // if (new KeyboardShortcut(KeyCode.F9).IsDown())
+
             if (ShowCounter.Value.IsDown())
             {
                 if (!MainWindow.initialized)
@@ -53,6 +54,14 @@ namespace ScriptTrainer
                 MainWindow.optionToggle = !MainWindow.optionToggle;
                 MainWindow.canvas.SetActive(MainWindow.optionToggle);
                 Event.current.Use();
+            }
+        }
+        public void FixedUpdate()
+        {
+            if (Scripts.IsChangeMusic)
+            {
+                Thread.Sleep(490);
+                Scripts.ChangeAnthorMusicEnd();
             }
         }
 

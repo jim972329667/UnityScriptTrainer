@@ -117,4 +117,7 @@
     <None Include="UnityGameUI\README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /y /d "C:\Users\97232\OneDrive\文档\GitHub\UnityScriptTrainer\奇怪的RPG\ScriptTrainer\bin\Debug\*.*"  "F:\SteamLibrary\steamapps\common\奇怪的RPG\BepInEx\plugins\"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
