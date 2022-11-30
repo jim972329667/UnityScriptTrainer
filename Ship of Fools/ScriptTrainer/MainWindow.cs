@@ -1,5 +1,4 @@
 ﻿
-using LayerLab;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -102,24 +101,24 @@ namespace ScriptTrainer
                 canvas = UIControls.createUICanvas();
                 Object.DontDestroyOnLoad(canvas);
                 // 设置背景
-                //GameObject background = UIControls.createUIPanel(canvas, (height + 40).ToString(), (width + 40).ToString(), null);
-                //background.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");
+                GameObject background = UIControls.createUIPanel(canvas, (height + 40).ToString(), (width + 40).ToString(), null);
+                background.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");
 
                 // 将面板添加到画布, 请参阅 createUIPanel 了解我们将高度/宽度作为字符串传递的原因
                 uiPanel = UIControls.createUIPanel(canvas, height.ToString(), width.ToString(), null);
                 // 设置背景颜色
                 uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
-                
+
                 // 这就是我们将如何挂钩鼠标事件以进行窗口拖动
-                //EventTrigger comp1 = background.AddComponent<EventTrigger>();
-                //WindowDragHandler comp2 = background.AddComponent<WindowDragHandler>();
+                EventTrigger comp1 = background.AddComponent<EventTrigger>();
+                WindowDragHandler comp2 = background.AddComponent<WindowDragHandler>();
 
 
                 #region[面板元素]
 
 
                 #region[创建标题 和 关闭按钮]
-                AddTitle("【奇怪的RPG】内置修改器 By:Jim97");
+                AddTitle("【同舟共济】内置修改器 By:Jim97");
 
                 GameObject closeButton = UIControls.createUIButton(uiPanel, "#B71C1CFF", "X", () =>
                 {
@@ -139,47 +138,25 @@ namespace ScriptTrainer
                 #region[添加功能按钮]
                 AddH3("常用功能：", BasicScripts);
                 {
-                    AddButton("金币倍率", BasicScripts, () =>
-                    {
-                        Scripts.AddMoney();
-                    });
-                    AddButton("添加死亡次数", BasicScripts, () =>
-                    {
-                        Scripts.AddDeadNum();
-                    });
-                    AddButton("切歌", BasicScripts, () =>
-                    {
-                        Scripts.ChangeAnthorMusic();
-                    });
-                    hr();
                     AddToggle("无需材料购买", 150, BasicScripts, (bool state) =>
                     {
-                        Scripts.RemoveNeedMaterials(state);
+                        Scripts.DiscountItemPrice(state);
                     });
-                    AddToggle("无限CD", 150, BasicScripts, (bool state) =>
-                    {
-                        Scripts.SkillCd(state);
-                    });
-                    AddToggle("无敌", 150, BasicScripts, (bool state) =>
-                    {
-                        Scripts.WuDi(state);
-                    });
-                    AddToggle("自动拾取掉落物", 150, BasicScripts, (bool state) =>
-                    {
-                        Scripts.AutoPickItem(state);
-                    });
+                    
+                    hr();
+                    
                     hr(10);
                 }
 
                 #endregion
 
                 #region[获取物品]
-                ResetCoordinates(true, true);
-                GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
-                ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
-                ItemScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
+                //ResetCoordinates(true, true);
+                //GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
+                //ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
+                //ItemScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
 
-                ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
+                //ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
 
 
                 #endregion
@@ -200,7 +177,7 @@ namespace ScriptTrainer
                 Navigation[] nav = new Navigation[]
                 {
                     new Navigation("BasicScripts","基础功能", BasicScripts, true),
-                    new Navigation("ItemScripts", "随行商店", ItemScripts, false),
+                    //new Navigation("ItemScripts", "随行商店", ItemScripts, false),
                 };
 
                 UINavigation.Initialize(nav, NavPanel);

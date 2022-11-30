@@ -178,12 +178,10 @@ namespace ScriptTrainer
             {
                 if(item.itemType == ItemType.Equipment)
                 {
-                    var btn = createItemButton(item.itemName, ItemPanel, item.icon, item.quality, BuyPrice(item.quality), () =>
+                    var btn = createItemButton(item.itemName, ItemPanel, item.icon, item.quality, GetPrice(item), () =>
                     {
                         SpawnEquipmentInputDialog("购买", item.id, (string count) =>
                         {
-                            Comp_ShopItem comp_ShopItem = new Comp_ShopItem();
-                            comp_ShopItem.ShowItemId(item.id);
                             BuyItem(item.id, count.ConvertToIntDef(1));
                         });
                     });
@@ -217,14 +215,14 @@ namespace ScriptTrainer
             canvas.GetComponent<Canvas>().overrideSorting = true;
             canvas.GetComponent<Canvas>().sortingOrder = 100;
 
-            string xx = StrTool.GetPlayerItemInfoStr(id).Replace("color", "").Replace("/", "");
+            string xx = StrTool.GetPlayerItemInfoStr(id).Replace("color", "").Replace("/", "").Replace("=", "");
             var xxx = xx.Split('<', '>');
             List<string> outline = new List<string>();
             for (int i = 0; i < xxx.Length; i++)
             {
                 if (xxx[i].Contains('\n'))
                 {
-                    outline.Add("=#FFFFFF");
+                    outline.Add("#FFFFFF");
                     string[] tmps = xxx[i].Split('\n');
                     foreach (string tmp in tmps)
                     {
@@ -253,7 +251,31 @@ namespace ScriptTrainer
                     }
                 }
             }
-            int size = GetLineCount(outline) * 20 + 20;
+            for (int i = 0; i < outline.Count; i++)
+            {
+                if (outline[i].Contains("受到伤害增加"))
+                {
+                    if (i + 1 < outline.Count)
+                    {
+                        outline[i + 1] = "";
+                    }
+                    if(i + 2 < outline.Count)
+                    {
+                        outline[i] += outline[i + 2];
+                        outline[i + 2] = "";
+                    }
+                }
+            }
+            int size = GetLineCount(outline) * 20 + 20 + 40;
+
+            
+
+            int index = 0;
+            foreach(var txt in outline)
+            {
+                Debug.Log($"{index}:{txt}");
+                index++;
+            }
 
             GameObject uiPanel = UIControls.createUIPanel(canvas, size.ToString(), "300", null);  // 创建面板
             uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#37474FFF"); // 设置背景颜色
@@ -269,17 +291,27 @@ namespace ScriptTrainer
             int j = 0;
             foreach(var line in outline)
             {
-                if (line.StartsWith("="))
+                if (line.StartsWith("#"))
                 {
-                    DefaultColor = line.Replace("=", "") + "FF";
-                    continue;
+                    DefaultColor = line + "FF";
                 }
-                GameObject uiText = UIControls.createUIText(uiPanel, txtBgSprite, DefaultColor);
-                uiText.GetComponent<Text>().text = line;
-                uiText.GetComponent<RectTransform>().localPosition = new Vector2(0, size/2 - 20 - 20 * j);
-                uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(280, 20);
-                uiText.GetComponent<Text>().fontSize = 14;
-                j++;
+                else if (line == "green")
+                {
+                    DefaultColor = ColorUtility.ToHtmlStringRGBA(Color.green);
+                }
+                else if(line == "red")
+                {
+                    DefaultColor = ColorUtility.ToHtmlStringRGBA(Color.red);
+                }
+                else if(line != "")
+                {
+                    GameObject uiText = UIControls.createUIText(uiPanel, txtBgSprite, DefaultColor);
+                    uiText.GetComponent<Text>().text = line;
+                    uiText.GetComponent<RectTransform>().localPosition = new Vector2(0, size / 2 - 20 - 20 * j);
+                    uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(280, 20);
+                    uiText.GetComponent<Text>().fontSize = 14;
+                    j++;
+                }
             }
 
             // 创建确定按钮
@@ -407,6 +439,7 @@ namespace ScriptTrainer
             Config_Item itemInfo = Config_Item.GetItemInfo(itemId);
             if (Singleton<GameManager>.Instance.IsBuyItemExist(itemInfo))
             {
+                string text = Singleton<LanguageManager>.Instance.GetStr("tips_buyFail");
                 Singleton<EventManager>.Instance.Send<string>("ShowTip", Singleton<LanguageManager>.Instance.GetStr("tips_buyFail"));
                 return;
             }
@@ -426,6 +459,7 @@ namespace ScriptTrainer
             {
                 Singleton<EventManager>.Instance.Send<string>("ShowTip", Singleton<LanguageManager>.Instance.GetStr("tips_buyFail2"));
             }
+            
         }
 
         #region[获取数据相关函数]
@@ -452,7 +486,7 @@ namespace ScriptTrainer
                     list.Add(ItemData[i]);
                 }
             }
-            maxPage = ItemData.Count / conunt;
+            maxPage = ItemData.Count / conunt + 1;
 
             return list;
         }
@@ -505,7 +539,7 @@ namespace ScriptTrainer
             {
                 if (item.itemName != null && item.itemName != "" && item.itemName != string.Empty)
                 {
-                    if(item.itemType != ItemType.Special)
+                    if(item.itemType != ItemType.Special && item.id != GameConst.MoneyItemId)
                         list.Add(item);
                 }
             }
@@ -519,11 +553,11 @@ namespace ScriptTrainer
             else if (quality == QualityType.Blue)
                 return 500;
             else if (quality == QualityType.Purple)
-                return 1000;
-            else if (quality == QualityType.Orange)
                 return 5000;
+            else if (quality == QualityType.Orange)
+                return 20000;
             else if (quality == QualityType.Red)
-                return 10000;
+                return 100000;
             else
                 return 0;
         }
@@ -572,7 +606,7 @@ namespace ScriptTrainer
             int count = 0;
             foreach(var line in strings)
             {
-                if (!line.StartsWith("="))
+                if (!line.StartsWith("#") && line != "green" && line != "red" && line.Length > 1)
                 {
                     count++;
                 }
