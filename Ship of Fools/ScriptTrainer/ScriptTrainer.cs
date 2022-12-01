@@ -11,10 +11,10 @@ namespace ScriptTrainer
     public class ScriptTrainer: BaseUnityPlugin
     {
         // 窗口相关
-        //MainWindow mw;
-        
+        MainWindow mw;
+
         // 启动按键
-        //private ConfigEntry<BepInEx.Configuration.KeyboardShortcut> ShowCounter { get; set; }
+        private ConfigEntry<BepInEx.Configuration.KeyboardShortcut> ShowCounter { get; set; }
         private ConfigEntry<bool> IsDiscount { get; set; }
         public void Awake()
         {
@@ -28,35 +28,35 @@ namespace ScriptTrainer
             harmony.PatchAll();
             #endregion
 
-            //ShowCounter = Config.Bind("修改器快捷键", "Key", new KeyboardShortcut(KeyCode.F9));
+            ShowCounter = Config.Bind("修改器快捷键", "Key", new KeyboardShortcut(KeyCode.F9));
             IsDiscount = Config.Bind("是否启用打折功能", "Key", true);
             ScriptPatch.IsDiscount = IsDiscount.Value;
             Debug.Log("脚本已启动");
-            //mw = new MainWindow();
+            mw = new MainWindow();
         }
 
         public void Update()
         {
-            //if (!MainWindow.initialized)
-            //{
-            //    MainWindow.Initialize();
-            //}
+            if (!MainWindow.initialized)
+            {
+                MainWindow.Initialize();
+            }
 
-            //// 切换UI开关
-            ////if (ShowCounter.IsDown())
-            //// if (new KeyboardShortcut(KeyCode.F9).IsDown())
+            // 切换UI开关
+            //if (ShowCounter.IsDown())
+            // if (new KeyboardShortcut(KeyCode.F9).IsDown())
 
-            //if (ShowCounter.Value.IsDown())
-            //{
-            //    if (!MainWindow.initialized)
-            //    {
-            //        return;
-            //    }
+            if (ShowCounter.Value.IsDown())
+            {
+                if (!MainWindow.initialized)
+                {
+                    return;
+                }
 
-            //    MainWindow.optionToggle = !MainWindow.optionToggle;
-            //    MainWindow.canvas.SetActive(MainWindow.optionToggle);
-            //    UnityEngine.Event.current.Use();
-            //}
+                MainWindow.optionToggle = !MainWindow.optionToggle;
+                MainWindow.canvas.SetActive(MainWindow.optionToggle);
+                UnityEngine.Event.current.Use();
+            }
         }
         public void FixedUpdate()
         {

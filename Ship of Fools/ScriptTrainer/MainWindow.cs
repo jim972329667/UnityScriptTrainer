@@ -26,7 +26,7 @@ namespace ScriptTrainer
         public static AssetBundle testAssetBundle = null;
         public static GameObject canvas = null;
         private static GameObject uiPanel = null;
-        private static readonly int width = Mathf.Min(Screen.width, 740);
+        public static readonly int width = Mathf.Min(Screen.width, 740);
         private static readonly int height = (Screen.height < 400) ? Screen.height : (450);
 
         // 按钮位置
@@ -138,11 +138,14 @@ namespace ScriptTrainer
                 #region[添加功能按钮]
                 AddH3("常用功能：", BasicScripts);
                 {
-                    AddToggle("无需材料购买", 150, BasicScripts, (bool state) =>
+                    AddToggle("风暴变为30回合", 150, BasicScripts, (bool state) =>
                     {
-                        Scripts.DiscountItemPrice(state);
+                        Scripts.ChangeStormDelay(state);
                     });
-                    
+                    //AddButton("添加物品", BasicScripts, () => 
+                    //{
+                    //    Scripts.AddItem();
+                    //});
                     hr();
                     
                     hr(10);
@@ -151,12 +154,12 @@ namespace ScriptTrainer
                 #endregion
 
                 #region[获取物品]
-                //ResetCoordinates(true, true);
-                //GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
-                //ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
-                //ItemScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
+                ResetCoordinates(true, true);
+                GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
+                ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
+                ItemScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
 
-                //ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
+                ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
 
 
                 #endregion
@@ -177,7 +180,7 @@ namespace ScriptTrainer
                 Navigation[] nav = new Navigation[]
                 {
                     new Navigation("BasicScripts","基础功能", BasicScripts, true),
-                    //new Navigation("ItemScripts", "随行商店", ItemScripts, false),
+                    new Navigation("ItemScripts", "物品添加", ItemScripts, false),
                 };
 
                 UINavigation.Initialize(nav, NavPanel);
