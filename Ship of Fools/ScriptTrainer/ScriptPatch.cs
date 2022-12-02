@@ -219,6 +219,10 @@ namespace ScriptTrainer
         }
         #endregion
 
+        #region Boss数据
+        
+
+        #endregion
 
         //[HarmonyPatch(typeof(GameState), "IncrementEnemyKillCount")]
         //public class GameStateOverridePatch_IncrementEnemyKillCount
@@ -244,66 +248,6 @@ namespace ScriptTrainer
         //    public static void Prefix(ref int price, Currency currency)
         //    {
         //        price /= 2;
-        //    }
-        //}
-
-        //[HarmonyPatch(typeof(Item), "Construct")]
-        //public class ItemOverridePatch_Construct
-        //{
-        //    [HarmonyPostfix]
-        //    public static void Postfix(Item __instance)
-        //    {
-        //        bool overridePlankPrice = (bool)Traverse.Create(__instance).Field("overridePlankPrice").GetValue();
-        //        bool overrideSandDollarPrice = (bool)Traverse.Create(__instance).Field("overrideSandDollarPrice").GetValue();
-        //        bool overrideShardPrice = (bool)Traverse.Create(__instance).Field("overrideShardPrice").GetValue();
-
-        //        if (overridePlankPrice)
-        //        {
-        //            int plankPrice = (int)Traverse.Create(__instance).Field("plankPrice").GetValue();
-        //            Traverse.Create(__instance).Field("plankPrice").SetValue(plankPrice / 2);
-        //        }
-        //        if (overrideSandDollarPrice)
-        //        {
-        //            int sandDollarPrice = (int)Traverse.Create(__instance).Field("sandDollarPrice").GetValue();
-        //            Traverse.Create(__instance).Field("sandDollarPrice").SetValue(sandDollarPrice / 2);
-        //        }
-        //        if (overrideShardPrice)
-        //        {
-        //            int shardPrice = (int)Traverse.Create(__instance).Field("shardPrice").GetValue();
-        //            Traverse.Create(__instance).Field("shardPrice").SetValue(shardPrice / 2);
-        //        }
-        //    }
-
-        //}
-
-        //[HarmonyPatch(typeof(Prices), "GetPrice")]
-        //public class PricesOverridePatch_GetPrice
-        //{
-        //    [HarmonyPostfix]
-        //    public static void Postfix(ref int __result)
-        //    {
-        //        __result /= 2;
-        //    }
-
-        //}
-
-        //[HarmonyPatch(typeof(ShopShowcase), "Price", MethodType.Getter)]
-        //class ShopShowcasePricePatch
-        //{
-        //    [HarmonyPostfix]
-        //    public static void Postfix(ref int __result)
-        //    {
-        //        __result /= 2;       
-        //    }
-        //}
-
-        //[HarmonyPatch(typeof(PriceTag), "Price", MethodType.Getter)]
-        //class PriceTagPricePatch
-        //{
-        //    [HarmonyPostfix]
-        //    public static void Postfix(ref int __result)
-        //    {
-        //        __result /= 2;
         //    }
         //}
     }

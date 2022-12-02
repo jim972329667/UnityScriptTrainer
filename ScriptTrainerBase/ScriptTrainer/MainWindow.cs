@@ -138,10 +138,10 @@ namespace ScriptTrainer
                 #region[添加功能按钮]
                 AddH3("常用功能：", BasicScripts);
                 {
-                    AddToggle("风暴变为30回合", 150, BasicScripts, (bool state) =>
-                    {
-                        Scripts.ChangeStormDelay(state);
-                    });
+                    //AddToggle("风暴变为30回合", 150, BasicScripts, (bool state) =>
+                    //{
+                    //    Scripts.ChangeStormDelay(state);
+                    //});
                     //AddButton("添加物品", BasicScripts, () => 
                     //{
                     //    Scripts.AddItem();
@@ -211,7 +211,6 @@ namespace ScriptTrainer
 
             return button;
         }
-
         // 添加复选框
         public static GameObject AddToggle(string Text, int width, GameObject panel, UnityAction<bool> action)
         {
@@ -233,7 +232,6 @@ namespace ScriptTrainer
 
             return uiToggle;
         }
-
         // 添加输入框
         public static GameObject AddInputField(string Text, int width, string defaultText, GameObject panel, UnityAction<string> action)
         {
@@ -265,7 +263,6 @@ namespace ScriptTrainer
             elementX += width / 2 + 10;
             return uiInputField;
         }
-
         // 添加下拉框
         public GameObject AddDropdown(string Text, int width, List<string> options, GameObject panel, UnityAction<int> action)
         {
