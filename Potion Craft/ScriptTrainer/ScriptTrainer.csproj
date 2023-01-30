@@ -119,7 +119,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <Import Project="..\..\..\UnityGameUI\UnityGameUI\UnityGameUI.projitems" Label="Shared" />
+  <Import Project="..\..\..\UnityGameUI\UnityGameUI.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetPath)" "E:\Program Files (x86)\Steam\steamapps\common\Potion Craft\BepInEx\Plugins\" /s /i /y</PostBuildEvent>

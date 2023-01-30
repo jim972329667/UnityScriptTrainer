@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptTrainer", "ScriptTrainer\ScriptTrainer.csproj", "{56B71F4D-F911-4369-87C0-F13AD81535C2}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UnityGameUI", "..\..\UnityGameUI\UnityGameUI\UnityGameUI.shproj", "{F186AC5D-269F-4856-9479-013940A0DD5F}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UnityGameUI", "..\..\UnityGameUI\UnityGameUI.shproj", "{F186AC5D-269F-4856-9479-013940A0DD5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
