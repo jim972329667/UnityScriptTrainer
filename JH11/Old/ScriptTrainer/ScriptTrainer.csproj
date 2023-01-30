@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A6FF638C-8DDC-484F-A418-F866C50389A7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ScriptTrainer</RootNamespace>
+    <AssemblyName>ScriptTrainer</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony20">
+      <HintPath>..\..\Library\BepInEx_64\0Harmony20.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\江湖十一\JH11_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>..\..\Library\BepInEx_64\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx.Harmony">
+      <HintPath>..\..\Library\BepInEx_64\BepInEx.Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>..\..\Library\Unity\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\Library\Unity\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\江湖十一\JH11_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\江湖十一\JH11_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\江湖十一\JH11_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\江湖十一\JH11_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\江湖十一\JH11_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\江湖十一\JH11_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\江湖十一\JH11_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CharacterWindow.cs" />
+    <Compile Include="ItemWindow.cs" />
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="PlaceWindow.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptPatch.cs" />
+    <Compile Include="Scripts.cs" />
+    <Compile Include="ScriptTrainer.cs" />
+    <Compile Include="UnityGameUI\DragAndDrog.cs" />
+    <Compile Include="UnityGameUI\d_LoadImage.cs" />
+    <Compile Include="UnityGameUI\Extensions.cs" />
+    <Compile Include="UnityGameUI\Navigation.cs" />
+    <Compile Include="UnityGameUI\parseHTMLString.cs" />
+    <Compile Include="UnityGameUI\TooltipGUI.cs" />
+    <Compile Include="UnityGameUI\UIControls.cs" />
+    <Compile Include="UnityGameUI\UINavigation.cs" />
+    <Compile Include="UnityGameUI\UIWindows.cs" />
+    <Compile Include="UnityGameUI\WindowDragHandler.cs" />
+    <Compile Include="ZGGameObject.cs" />
+    <Compile Include="ZGItemBase.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(TargetPath)" "E:\Program Files (x86)\Steam\steamapps\common\江湖十一\BepInEx\Plugins\" /s /i /y</PostBuildEvent>
+  </PropertyGroup>
+</Project>

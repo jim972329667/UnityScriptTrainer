@@ -154,12 +154,12 @@ namespace ScriptTrainer
                 #endregion
 
                 #region[获取物品]
-                ResetCoordinates(true, true);
-                GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
-                ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
-                ItemScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
+                //ResetCoordinates(true, true);
+                //GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
+                //ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
+                //ItemScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
 
-                ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
+                //ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
 
 
                 #endregion
@@ -180,7 +180,7 @@ namespace ScriptTrainer
                 Navigation[] nav = new Navigation[]
                 {
                     new Navigation("BasicScripts","基础功能", BasicScripts, true),
-                    new Navigation("ItemScripts", "物品添加", ItemScripts, false),
+                    //new Navigation("ItemScripts", "物品添加", ItemScripts, false),
                 };
 
                 UINavigation.Initialize(nav, NavPanel);
