@@ -7,3 +7,6 @@
 [submodule "Dyson Sphere Program/ScriptTrainer/UnityGameUI"]
 	path = Dyson Sphere Program/ScriptTrainer/UnityGameUI
 	url = https://github.com/GlossMod/UnityGameUI.git
+[submodule "Potion Craft/ScriptTrainer/UnityGameUI"]
+	path = Potion Craft/ScriptTrainer/UnityGameUI
+	url = https://github.com/jim972329667/UnityGameUI.git

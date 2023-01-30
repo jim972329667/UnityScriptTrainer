@@ -31,7 +31,7 @@ Global
 		SolutionGuid = {DF11F9A6-5955-4B29-8D1A-BD80EF1C6103}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\..\UnityGameUI\UnityGameUI\UnityGameUI.projitems*{56b71f4d-f911-4369-87c0-f13ad81535c2}*SharedItemsImports = 4
-		..\..\UnityGameUI\UnityGameUI\UnityGameUI.projitems*{f186ac5d-269f-4856-9479-013940a0dd5f}*SharedItemsImports = 13
+		..\..\UnityGameUI\UnityGameUI.projitems*{56b71f4d-f911-4369-87c0-f13ad81535c2}*SharedItemsImports = 4
+		..\..\UnityGameUI\UnityGameUI.projitems*{f186ac5d-269f-4856-9479-013940a0dd5f}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
