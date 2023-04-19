@@ -34,5 +34,18 @@ namespace ScriptTrainer
             PlayerManager.TalentsSubManager Talents = Managers.Player.talents;
             Talents.CurrentPoints += count;
         }
+        public static void ChangeTimeScale(float scale)
+        {
+            if(scale != 1)
+            {
+                ScriptTrainer.Instance.TimeScaleRate = scale;
+                ScriptTrainer.Instance.TimeScale = true;
+            }
+            else
+            {
+                ScriptTrainer.Instance.TimeScaleRate = scale;
+                ScriptTrainer.Instance.TimeScale = false;
+            }
+        }
     }
 }

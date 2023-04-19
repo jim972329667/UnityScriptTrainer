@@ -1,4 +1,5 @@
 ﻿
+using BepInEx;
 using Eremite.Controller;
 using System;
 using System.Collections.Generic;
@@ -126,7 +127,7 @@ namespace ScriptTrainer
 
 
                 #region[创建标题 和 关闭按钮]
-                AddTitle("Against the Storm 内置修改器 by:Jim97");
+                AddTitle(canvas);
 
                 GameObject closeButton = UIControls.createUIButton(uiPanel, "#B71C1CFF", "X", () =>
                 {
@@ -356,9 +357,9 @@ namespace ScriptTrainer
             return uiText;
         }
         // 添加标题
-        public static GameObject AddTitle(string Title)
+        public static GameObject AddTitle(GameObject panel)
         {
-            GameObject TitleBackground = UIControls.createUIPanel(canvas, "30", (width - 20).ToString(), null);
+            GameObject TitleBackground = UIControls.createUIPanel(panel, "30", (width - 20).ToString(), null);
             TitleBackground.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");
             TitleBackground.GetComponent<RectTransform>().localPosition = new Vector3(0, height / 2 - 30, 0);
 
@@ -367,7 +368,7 @@ namespace ScriptTrainer
             uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(width - 10, 30);
             uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
             Text text = uiText.GetComponent<Text>();
-            text.text = Title;
+            text.text = ScriptTrainer.Instance.GetTitle();
             text.alignment = TextAnchor.MiddleCenter;
             text.fontSize = 16;
 

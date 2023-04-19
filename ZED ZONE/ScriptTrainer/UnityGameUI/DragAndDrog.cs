@@ -31,21 +31,21 @@ namespace UnityGameUI
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if(Input.mousePosition.x < target.transform.position.x + WindowSize.x/2 && Input.mousePosition.x > target.transform.position.x - WindowSize.x / 2)
+                if (Input.mousePosition.x < target.transform.position.x + WindowSize.x / 2 && Input.mousePosition.x > target.transform.position.x - WindowSize.x / 2)
                 {
-                    if(Input.mousePosition.y < target.transform.position.y + WindowSize.y / 2 && Input.mousePosition.y > target.transform.position.y - WindowSize.y / 2)
+                    if (Input.mousePosition.y < target.transform.position.y + WindowSize.y / 2 && Input.mousePosition.y > target.transform.position.y - WindowSize.y / 2)
                     {
                         isMouseDrag = true;
                         offset = target.transform.position - Input.mousePosition;
                     }
                 }
-                
+
                 //screenPosition = Camera.main.WorldToScreenPoint(target.transform.position);
                 //ScriptTrainer.ScriptTrainer.Instance.Log($"ZG:");
                 //ScriptTrainer.ScriptTrainer.Instance.Log($"ZG:面板位置:{target.transform.position.x};{target.transform.position.y}");
                 //ScriptTrainer.ScriptTrainer.Instance.Log($"ZG:鼠标位置:{Input.mousePosition.x};{Input.mousePosition.y}");
                 //ScriptTrainer.ScriptTrainer.Instance.Log($"ZG:面板大小:{target.GetComponent<RectTransform>().sizeDelta.x};{target.GetComponent<RectTransform>().sizeDelta.y}");
-                
+
             }
 
             if (Input.GetMouseButtonUp(0))

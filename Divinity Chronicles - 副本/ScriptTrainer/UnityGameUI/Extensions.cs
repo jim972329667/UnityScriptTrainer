@@ -34,6 +34,30 @@ namespace UnityGameUI
             }
             return new Color32(r, g, b, a);
         }
+        public static Color32 ToUnityEngineColor(this System.Drawing.Color color)
+        {
+            Color32 value = new Color32
+            {
+                r = color.R,
+                g = color.G,
+                b = color.B,
+                a = color.A
+            };
+            return value;
+        }
+        public static string ColorToHtml(this System.Drawing.Color color)
+        {
+            return System.Drawing.ColorTranslator.ToHtml(color);
+        }
+        public static string TextWithColor(this string text, System.Drawing.Color color)
+        {
+            return $"<color={color.ColorToHtml()}>{text}</color>";
+        }
+        public static string TextWithColor(this string text, string color)
+        {
+            return $"<color={color}>{text}</color>";
+        }
+
         public static int ConvertToIntDef(this string input, int defaultValue)
         {
             int result;
@@ -68,6 +92,35 @@ namespace UnityGameUI
                 }
             }
             return arrlist;
+        }
+
+        public static List<string> ParseDescription(this string Description, int charnum)
+        {
+            string tmp = Description.Replace("<b>", "").Replace("</b>", "").Replace("</color>", "").Replace("<color=red","").Replace("<color=yellow", "").Replace("<color=green", "");
+            List<string> list = new List<string>();
+
+            foreach (string line in tmp.Split('>'))
+            {
+                if (line.StartsWith("<color="))
+                {
+                    list.Add(line.ParseColor());
+                }
+                else
+                {
+                    if (line.Length > charnum)
+                    {
+                        list.AddRange(line.GetSeparateSubString(charnum));
+                    }
+                    else
+                        list.Add(line);
+                }
+            }
+
+            return list;
+        }
+        public static string ParseColor(this string color)
+        {
+            return color.Replace("<color=", "").Replace(" ", "");
         }
     }
 }

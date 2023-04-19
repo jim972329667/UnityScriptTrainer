@@ -63,15 +63,8 @@ namespace ScriptTrainer
             hr();
 
             //创建物品列表
-            if (false)
-            {
-                container();
-            }
-            else
-            {
-                //elementX += 200;
-                elementY = 125 - 60 * 5;
-            }
+            //elementX += 200;
+            elementY = 125 - 60 * 5;
             //创建分页
 
             PageBar(Panel);
@@ -277,7 +270,7 @@ namespace ScriptTrainer
 
             elementX += 200;
 
-            return button;
+            return background;
         }
         public static GameObject AddToggle(string Text, int width, GameObject panel, UnityAction<bool> action)
         {
@@ -380,7 +373,7 @@ namespace ScriptTrainer
         #region[获取数据相关函数]
         private static List<GoodModel> GetItemData()
         {
-            List<GoodModel> ItemData = MainController.Instance.Settings.Goods.ToList<GoodModel>();
+            List<GoodModel> ItemData = ZGGameObject.GoodModels;
             //var xx = MainController.Instance.Settings.effects.ToList<EffectModel>();
             //foreach (EffectModel item in xx)
             //{

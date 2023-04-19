@@ -1,11 +1,13 @@
-﻿
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UnityGameUI
+namespace ScriptTrainer.UI
 {
-    // : MonoBehaviour
     public static class UINavigation
     {
         #region[全局参数]

@@ -1,4 +1,5 @@
 ﻿
+using BepInEx.Configuration;
 using DarkScreenSystem;
 using PotionCraft.ManagersSystem;
 using PotionCraft.ObjectBased.Cursor;
@@ -31,7 +32,7 @@ namespace ScriptTrainer
         private static GameObject uiPanel = null;
         public static readonly int width = Mathf.Min(Screen.width, 740);
         private static readonly int height = (Screen.height < 400) ? Screen.height : (450);
-
+        private static GameObject TimeScaleInput = null;
         // 按钮位置
         private static int elementX = initialX;
         private static int elementY = initialY;
@@ -125,11 +126,9 @@ namespace ScriptTrainer
                 uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
 
                 // 这就是我们将如何挂钩鼠标事件以进行窗口拖动
-                dragAndDrog = canvas.AddComponent<DragAndDrog>();
 
-                dragAndDrog.target = background;
+                dragAndDrog = background.AddComponent<DragAndDrog>();
                 dragAndDrog.WindowSizeFactor = ScriptTrainer.WindowSizeFactor.Value;
-
                 #region[面板元素]
 
 
@@ -152,6 +151,21 @@ namespace ScriptTrainer
                 BasicScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
 
                 #region[添加功能按钮]
+                AddH3("时间功能：", BasicScripts);
+                {
+                    AddToggle("修改游戏时间倍率", 150, false, BasicScripts, (bool state) =>
+                    {
+                        if (TimeScaleInput == null)
+                            return;
+                        TimeScaleInput.SetActive(!state);
+                    });
+                    TimeScaleInput = AddInputField(100, "0.5", BasicScripts, delegate (string text)
+                    {
+                        Scripts.ChangeTimeScale(text.ConvertToFloatDef(0.5f));
+                    });
+
+                }
+                hr();
                 AddH3("常用功能：", BasicScripts);
                 {
                     AddButton("增加金币", BasicScripts, () =>
@@ -189,17 +203,6 @@ namespace ScriptTrainer
                             Scripts.AddTalentsPoints(count.ConvertToIntDef(5));
                         });
                     });
-                    //AddButton("增加月亮", BasicScripts, () =>
-                    //{
-                    //    UIWindows.SpawnInputDialog($"您想获得多少个月亮？", "获得", "100", (string count) =>
-                    //    {
-                    //        Scripts.AddMoonCount(count.ConvertToIntDef(100));
-                    //    });
-                    //});
-                    //AddToggle("减半研究时间", 150, BasicScripts, (bool state) =>
-                    //{
-                    //    Scripts.ChangeResearchRate(state);
-                    //});
                     hr();
 
                     hr(10);
@@ -315,6 +318,25 @@ namespace ScriptTrainer
 
             return uiToggle;
         }
+        public static GameObject AddToggle(string Text, int width, bool isOn, GameObject panel, UnityAction<bool> action = null)
+        {
+            Sprite bgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture(ColorUtility.ToHtmlStringRGBA(Color.white)));
+            Sprite customCheckmarkSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture(ColorUtility.ToHtmlStringRGBA(Color.red)));
+            GameObject gameObject = UIControls.createUIToggle(panel, bgSprite, customCheckmarkSprite);
+            gameObject.GetComponentInChildren<Text>().color = Color.white;
+            gameObject.GetComponentInChildren<Toggle>().isOn = isOn;
+            gameObject.GetComponentInChildren<Toggle>().GetComponent<RectTransform>().sizeDelta = new Vector2(20f, 20f);
+            gameObject.GetComponentInChildren<Toggle>().GetComponent<RectTransform>().localPosition = new Vector2((float)(elementX - 30), (float)elementY);
+            gameObject.GetComponentInChildren<Text>().GetComponent<RectTransform>().sizeDelta = new Vector2((float)(width - 20), 30f);
+            gameObject.GetComponentInChildren<Text>().GetComponent<RectTransform>().localPosition = new Vector2((float)((width - 20) / 2 + 30), -17f);
+            gameObject.GetComponentInChildren<Text>().text = Text;
+            gameObject.GetComponentInChildren<Toggle>().onValueChanged.AddListener(delegate (bool state)
+            {
+                action(state);
+            });
+            elementX += width + 10;
+            return gameObject;
+        }
         // 添加输入框
         public static GameObject AddInputField(string Text, int width, string defaultText, GameObject panel, UnityAction<string> action)
         {
@@ -345,6 +367,18 @@ namespace ScriptTrainer
 
             elementX += width / 2 + 10;
             return uiInputField;
+        }
+        public static GameObject AddInputField(int width, string defaultText, GameObject panel, UnityAction<string> action)
+        {
+            MainWindow.elementX += width / 2 - 30;
+            Sprite bgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#212121FF"));
+            GameObject gameObject = UIControls.createUIInputField(panel, bgSprite, "#FFFFFFFF");
+            gameObject.GetComponent<InputField>().text = defaultText;
+            gameObject.GetComponent<RectTransform>().localPosition = new Vector3((float)MainWindow.elementX, (float)MainWindow.elementY, 0f);
+            gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2((float)width, 30f);
+            gameObject.GetComponent<InputField>().onEndEdit.AddListener(action);
+            MainWindow.elementX += width / 2 + 10;
+            return gameObject;
         }
         // 添加下拉框
         public GameObject AddDropdown(string Text, int width, List<string> options, GameObject panel, UnityAction<int> action)

@@ -16,9 +16,13 @@ namespace ScriptTrainer
         public static ScriptTrainer Instance;
         // 窗口相关
         public GameObject YourTrainer;
+        
         // 启动按键
         public static ConfigEntry<KeyCode> ShowCounter { get; set; }
         public static ConfigEntry<float> WindowSizeFactor { get; set; }
+
+        public float TimeScaleRate = 1f;
+        public bool TimeScale = false;
         public void Awake()
         {
             Instance = this;
@@ -55,6 +59,14 @@ namespace ScriptTrainer
 
         public void Update()
         {
+            if (TimeScale)
+            {
+                Time.timeScale = TimeScaleRate;
+            }
+            else
+            {
+                Time.timeScale = 1f;
+            }
         }
         public void FixedUpdate()
         {

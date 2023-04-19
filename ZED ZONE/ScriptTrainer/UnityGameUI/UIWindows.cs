@@ -41,17 +41,17 @@ namespace UnityGameUI
             uiInputField.GetComponent<RectTransform>().localPosition = new Vector3(-50, -10, 0);
 
             // 创建确定按钮
-            GameObject uiButton = UIControls.createUIButton(uiPanel, "#8C9EFFFF", title, () =>
+            GameObject uiButton = UIControls.createUIButton(uiPanel, "#8C9EFFFF", title, (UnityAction)(() =>
             {
                 onFinish(uiInputField.GetComponent<InputField>().text);
                 Object.Destroy(canvas);
-            }, new Vector3(100, -10, 0));
+            }), new Vector3(100, -10, 0));
 
             // 创建关闭按钮
-            GameObject closeButton = UIControls.createUIButton(uiPanel, "#B71C1CFF", "X", () =>
+            GameObject closeButton = UIControls.createUIButton(uiPanel, "#B71C1CFF", "X", (UnityAction)(() =>
             {
                 Object.Destroy(canvas);
-            }, new Vector3(350 / 2 - 10, 70 / 2 - 10, 0));
+            }), new Vector3(350 / 2 - 10, 70 / 2 - 10, 0));
             // 设置closeButton宽高
             closeButton.GetComponent<RectTransform>().sizeDelta = new Vector2(20, 20);
             // 字体颜色为白色
@@ -92,23 +92,16 @@ namespace UnityGameUI
             int m_call = 0;
 
             // 下拉框选中时触发方法
-            uiDropDown.GetComponent<Dropdown>().onValueChanged.AddListener((int call) =>
+            uiDropDown.GetComponent<Dropdown>().onValueChanged.AddListener((UnityAction<int>)((int call) =>
             {
                 m_call = call;
-            });
+            }));
 
             // 创建确定按钮
-            GameObject uiButton = UIControls.createUIButton(uiPanel, "#8C9EFFFF", title, () =>
-            {
-                onFinish(m_call);
-                Object.Destroy(canvas);
-            }, new Vector3(100, -10, 0));
+            GameObject uiButton = UIControls.createUIButton(uiPanel, "#8C9EFFFF", title, (UnityAction)(() => { onFinish(m_call); Object.Destroy(canvas); }), new Vector3(100, -10, 0));
 
             // 创建关闭按钮
-            GameObject closeButton = UIControls.createUIButton(uiPanel, "#B71C1CFF", "X", () =>
-            {
-                Object.Destroy(canvas);
-            }, new Vector3(350 / 2 - 10, 70 / 2 - 10, 0));
+            GameObject closeButton = UIControls.createUIButton(uiPanel, "#B71C1CFF", "X", (UnityAction)(() => { Object.Destroy(canvas); }), new Vector3(350 / 2 - 10, 70 / 2 - 10, 0));
             // 设置closeButton宽高
             closeButton.GetComponent<RectTransform>().sizeDelta = new Vector2(20, 20);
             // 字体颜色为白色

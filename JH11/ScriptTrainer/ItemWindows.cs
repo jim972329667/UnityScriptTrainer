@@ -314,7 +314,7 @@ namespace ScriptTrainer
             gameObject5.GetComponent<RectTransform>().sizeDelta = new Vector2(60f, 20f);
             gameObject5.GetComponent<RectTransform>().localPosition = new Vector3(-50f, -10f, 0f);
             ItemWindow.elementX += 200;
-            return gameObject5;
+            return gameObject;
         }
 
         // Token: 0x06000077 RID: 119 RVA: 0x00007BC8 File Offset: 0x00005DC8

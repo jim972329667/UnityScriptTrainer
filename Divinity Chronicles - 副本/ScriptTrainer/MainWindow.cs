@@ -1,5 +1,4 @@
-﻿
-using NPOI.HSSF.Record.Formula.Functions;
+﻿using Codes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityGameUI;
+using Extensions = UnityGameUI.Extensions;
 using Navigation = UnityGameUI.Navigation;
 using Object = UnityEngine.Object;
 
@@ -15,15 +15,13 @@ namespace ScriptTrainer
 {
     public class MainWindow : MonoBehaviour
     {
-        public MainWindow(IntPtr handle) : base(handle) { }
         #region[声明]
-        // Trainer Base
+        // Trainer companionSetInLocation
         public static GameObject obj = null;
         public static MainWindow instance;
         public static bool initialized = false;
         public static bool _optionToggle = false;
         private static TooltipGUI toolTipComp = null;
-        public static DragAndDrog dragAndDrog = null;
 
         // UI
         public static AssetBundle testAssetBundle = null;
@@ -55,7 +53,16 @@ namespace ScriptTrainer
             set
             {
                 _optionToggle = value;
-
+                if (_optionToggle)
+                {
+                    //MainController.Instance.AppServices.InputService.Config.Disable();
+                    Singleton<GManager>.Instance.PauseGame();
+                }
+                else
+                {
+                    //MainController.Instance.AppServices.InputService.Config.Enable();
+                    Singleton<GManager>.Instance.ContinueGame();
+                }
                 if (!initialized)
                 {
                     instance.CreateUI();
@@ -80,12 +87,9 @@ namespace ScriptTrainer
 
         public MainWindow()
         {
-            
-        }
-        public void Start()
-        {
             instance = this;
         }
+
         public static void Initialize()
         {
             #region[初始化资源]
@@ -105,24 +109,28 @@ namespace ScriptTrainer
                 Debug.Log("创建 UI 元素");
 
                 canvas = UIControls.createUICanvas();
+                canvas.GetComponent<Canvas>().overrideSorting = true;
+                canvas.GetComponent<Canvas>().sortingOrder= -1;
                 Object.DontDestroyOnLoad(canvas);
+                
                 // 设置背景
                 GameObject background = UIControls.createUIPanel(canvas, (height + 40).ToString(), (width + 40).ToString(), null);
                 background.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");
-
                 // 将面板添加到画布, 请参阅 createUIPanel 了解我们将高度/宽度作为字符串传递的原因
                 uiPanel = UIControls.createUIPanel(canvas, height.ToString(), width.ToString(), null);
                 // 设置背景颜色
                 uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
 
                 // 这就是我们将如何挂钩鼠标事件以进行窗口拖动
-                MainWindow.dragAndDrog = MainWindow.canvas.AddComponent<DragAndDrog>();
+                EventTrigger comp1 = background.AddComponent<EventTrigger>();
+                WindowDragHandler comp2 = background.AddComponent<WindowDragHandler>();
+
 
                 #region[面板元素]
 
 
                 #region[创建标题 和 关闭按钮]
-                AddTitle(ScriptTrainer.PluginName + " by:Jim97 版本:" + ScriptTrainer.Version, gameObject);
+                AddTitle($"{ScriptTrainer.Instance.Info.Metadata.Name} by:Jim97");
 
                 GameObject closeButton = UIControls.createUIButton(uiPanel, "#B71C1CFF", "X", () =>
                 {
@@ -142,22 +150,26 @@ namespace ScriptTrainer
                 #region[添加功能按钮]
                 AddH3("常用功能：", BasicScripts);
                 {
-                    //AddToggle("风暴变为30回合", 150, BasicScripts, (bool state) =>
-                    //{
-                    //    Scripts.ChangeStormDelay(state);
-                    //});
-                    //AddButton("添加物品", BasicScripts, () => 
-                    //{
-                    //    Scripts.AddItem();
-                    //});
-                    hr();
+                    AddToggle("暂停经验", 180, BasicScripts, (bool state) =>
+                    {
+                        Scripts.StopExp(state);
+                    });
+                    AddButton("解锁全部神通", BasicScripts, () =>
+                    {
+                        Scripts.UnlockAllCombos();
+                    });
+                    AddButton(Extensions.TextWithColor("吸钱大法", System.Drawing.Color.Purple), BasicScripts, () =>
+                    {
+                        Scripts.GetAllCoins();
+                        optionToggle = !optionToggle;
+                        canvas.SetActive(optionToggle);
+                    });
 
-                    hr(10);
                 }
 
                 #endregion
 
-                #region[获取物品]
+                //#region[获取卡牌]
                 //ResetCoordinates(true, true);
                 //GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
                 //ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
@@ -166,7 +178,26 @@ namespace ScriptTrainer
                 //ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
 
 
-                #endregion
+                //#endregion
+
+                //#region[获取法宝]
+                //ResetCoordinates(true, true);
+                //GameObject RelicScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
+                //RelicScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
+                //RelicScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
+
+                //RelicWindow relicWindow = new RelicWindow(RelicScripts, elementX, elementY);
+                //#endregion
+
+                //#region[获取消耗品]
+                //ResetCoordinates(true, true);
+                //GameObject PotionScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
+                //PotionScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
+                //PotionScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
+
+                //PotionWindow potionWindow = new PotionWindow(PotionScripts, elementX, elementY);
+                //#endregion
+
                 #endregion
 
 
@@ -184,7 +215,9 @@ namespace ScriptTrainer
                 Navigation[] nav = new Navigation[]
                 {
                     new Navigation("BasicScripts","基础功能", BasicScripts, true),
-                    //new Navigation("ItemScripts", "物品添加", ItemScripts, false),
+                    //new Navigation("ItemScripts", "卡牌添加", ItemScripts, false),
+                    //new Navigation("RelicScripts", "法宝添加", RelicScripts, false),
+                    //new Navigation("PotionScripts", "消耗品添加", PotionScripts, false),
                 };
 
                 UINavigation.Initialize(nav, NavPanel);
@@ -198,7 +231,24 @@ namespace ScriptTrainer
 
         #region[添加组件]
         //添加按钮
-        public static GameObject AddButton(string Text, GameObject panel, Action action)
+        public static GameObject AddButton(string Text, GameObject panel, UnityAction action)
+        {
+            string backgroundColor = "#8C9EFFFF";
+            Vector3 localPosition = new Vector3(elementX, elementY, 0);
+            elementX += 110;
+
+            GameObject button = UIControls.createUIButton(panel, backgroundColor, Text, action, localPosition);
+
+            // 按钮样式
+            button.AddComponent<Shadow>().effectColor = UIControls.HTMLString2Color("#000000FF");   // 添加阴影
+            button.GetComponent<Shadow>().effectDistance = new Vector2(2, -2);              // 设置阴影偏移
+            button.GetComponentInChildren<Text>().fontSize = 14;     // 设置字体大小           
+            button.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 30);    // 设置按钮大小
+
+
+            return button;
+        }
+        public static GameObject AddButton(ref int elementX, ref int elementY, string Text, GameObject panel, UnityAction action)
         {
             string backgroundColor = "#8C9EFFFF";
             Vector3 localPosition = new Vector3(elementX, elementY, 0);
@@ -246,9 +296,9 @@ namespace ScriptTrainer
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
             GameObject uiText = UIControls.createUIText(panel, txtBgSprite, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = Text;
-            uiText.GetComponent<RectTransform>().localPosition = new Vector3(elementX, elementY, 0);
-            //uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 30);
-            uiText.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+            uiText.GetComponent<RectTransform>().localPosition = new Vector3(elementX - 50, elementY, 0);
+            uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 30);
+            uiText.GetComponent<Text>().alignment = TextAnchor.MiddleRight;
 
 
             // 坐标偏移
@@ -259,7 +309,7 @@ namespace ScriptTrainer
             GameObject uiInputField = UIControls.createUIInputField(panel, inputFieldSprite, "#FFFFFFFF");
             uiInputField.GetComponent<InputField>().text = defaultText;
             uiInputField.GetComponent<RectTransform>().localPosition = new Vector3(elementX, elementY, 0);
-            uiInputField.GetComponent<RectTransform>().sizeDelta = new Vector2(width - 60, 30);
+            uiInputField.GetComponent<RectTransform>().sizeDelta = new Vector2(width - 65, 30);
 
             // 文本框失去焦点时触发方法
             uiInputField.GetComponent<InputField>().onEndEdit.AddListener(action);
@@ -282,7 +332,7 @@ namespace ScriptTrainer
             uiText.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
 
             // 坐标偏移
-            elementX += 60;
+            elementX += 65;
 
             // 创建下拉框
             Sprite dropdownBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#212121FF"));      // 背景颜色
@@ -320,9 +370,9 @@ namespace ScriptTrainer
             return uiText;
         }
         // 添加标题
-        public static GameObject AddTitle(string Title, GameObject background)
+        public static GameObject AddTitle(string Title)
         {
-            GameObject TitleBackground = UIControls.createUIPanel(background, "30", (width - 20).ToString(), null);
+            GameObject TitleBackground = UIControls.createUIPanel(canvas, "30", (width - 20).ToString(), null);
             TitleBackground.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");
             TitleBackground.GetComponent<RectTransform>().localPosition = new Vector3(0, height / 2 - 30, 0);
 

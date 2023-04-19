@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityGameUI;
-using VWVO.ConfigClass.I18N;
 
 namespace ScriptTrainer
 {
@@ -92,25 +91,24 @@ namespace ScriptTrainer
             bool flag = MainWindow.canvas == null;
             if (flag)
             {
-                MainWindow.canvas = UIControls.createUICanvas();
+                MainWindow.canvas = UIControls.createUICanvas(ScriptTrainer.WindowSizeFactor.Value);
                 MainWindow.canvas.GetComponent<Canvas>().overrideSorting = true;
                 MainWindow.canvas.GetComponent<Canvas>().sortingOrder = 10000;
                 UnityEngine.Object.DontDestroyOnLoad(MainWindow.canvas);
+
                 GameObject gameObject = UIControls.createUIPanel(MainWindow.canvas, (MainWindow.height + 40).ToString(), (MainWindow.width + 40).ToString(), null);
 
                 gameObject.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");
                 MainWindow.uiPanel = UIControls.createUIPanel(gameObject, MainWindow.height.ToString(), MainWindow.width.ToString(), null);
                 MainWindow.uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
 
-                MainWindow.dragAndDrog = MainWindow.canvas.AddComponent<DragAndDrog>();
+                MainWindow.dragAndDrog = gameObject.AddComponent<DragAndDrog>();
+                dragAndDrog.WindowSizeFactor = ScriptTrainer.WindowSizeFactor.Value;
 
-                MainWindow.dragAndDrog.target = gameObject;
-                MainWindow.dragAndDrog.WindowSize = gameObject.GetComponent<RectTransform>().rect.size;
-                ScriptTrainer.Instance.Log($"{dragAndDrog.WindowSize.x}：{dragAndDrog.WindowSize.y}");
 
                 //MainWindow.dragAndDrog.WindowSize = new Vector2((float)(MainWindow.width + 40) * ScriptTrainer.ScaleFactor.Value, (float)(MainWindow.height + 40) * ScriptTrainer.ScaleFactor.Value);
 
-                MainWindow.AddTitle(ScriptTrainer.Instance.Info.Metadata.Name + " by:Jim97 版本:" + ScriptTrainer.Instance.Info.Metadata.Version, gameObject);
+                AddTitle(ScriptTrainer.Instance.Info.Metadata.Name + " by:Jim97 版本:" + ScriptTrainer.Instance.Info.Metadata.Version, gameObject);
                 GameObject gameObject2 = UIControls.createUIButton(MainWindow.uiPanel, "#B71C1CFF", "X", delegate
                 {
                     MainWindow.optionToggle = false;
@@ -279,9 +277,11 @@ namespace ScriptTrainer
                     if (state)
                     {
                         MainWindow.TimeScaleTextInput.SetActive(false);
+
                     }
                     else
                     {
+                        Time.timeScale = 1f;
                         MainWindow.TimeScaleTextInput.SetActive(true);
                     }
                 });
@@ -338,13 +338,22 @@ namespace ScriptTrainer
                 PlaceWindow placeWindow = new PlaceWindow(PlaceScripts, elementX, elementY);
                 #endregion
 
-                #region[地区修改]
+                #region[地区好感度修改]
                 ResetCoordinates(true, true);
                 GameObject RelationScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
                 RelationScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
                 RelationScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
 
                 RelationWindow relationWindow = new RelationWindow(RelationScripts, elementX, elementY);
+                #endregion
+
+                #region[地区修改]
+                ResetCoordinates(true, true);
+                GameObject TeleportScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
+                TeleportScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
+                TeleportScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
+
+                TeleportWindow teleportWindow = new TeleportWindow(TeleportScripts, elementX, elementY);
                 #endregion
 
                 #region[江湖录修改]
@@ -372,7 +381,8 @@ namespace ScriptTrainer
                     new UnityGameUI.Navigation("BasicScripts", "基础功能", BasicScripts, true),
                     new UnityGameUI.Navigation("CharacterScripts", "角色修改", CharacterScripts, false),
                     new UnityGameUI.Navigation("ItemScripts", "物品添加", ItemScripts, false),
-                    new UnityGameUI.Navigation("PlaceScripts", "地区修改", PlaceScripts, false),
+                    new UnityGameUI.Navigation("TeleportScripts", "地点瞬移", TeleportScripts, false),
+                    new UnityGameUI.Navigation("PlaceScripts", "地区好感度修改", PlaceScripts, false),
                     new UnityGameUI.Navigation("RelationScripts", "人物关系修改", RelationScripts, false),
                     new UnityGameUI.Navigation("CollectScripts", "江湖录修改", CollectScripts, false)
                 };

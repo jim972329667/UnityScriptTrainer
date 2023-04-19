@@ -14,7 +14,7 @@ namespace ScriptTrainer
                 return;
             }
             GameLoad.Instance.SaveData.Suns += count;
-            GameLoad.Instance.SaveDataToFile();
+            GameLoad.Instance.SaveMainDataToFile();
         }
         public static void AddMoonCount(int count)
         {
@@ -23,7 +23,7 @@ namespace ScriptTrainer
                 return;
             }
             GameLoad.Instance.SaveData.Moons += count;
-            GameLoad.Instance.SaveDataToFile();
+            GameLoad.Instance.SaveMainDataToFile();
         }
         public static void ChangeResearchRate(bool state)
         {

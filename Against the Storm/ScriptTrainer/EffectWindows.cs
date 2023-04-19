@@ -1,5 +1,6 @@
 ﻿using Eremite.Controller;
 using Eremite.Model;
+using Eremite.Model.Effects;
 using Eremite.Model.State;
 using Eremite.Tools.Runtime;
 using System;
@@ -66,15 +67,8 @@ namespace ScriptTrainer
             hr();
 
             //创建物品列表
-            if (false)
-            {
-                container();
-            }
-            else
-            {
-                //elementX += 200;
-                elementY = 125 - 60 * 5;
-            }
+            //elementX += 200;
+            elementY = 125 - 60 * 5;
             //创建分页
 
             PageBar(Panel);
@@ -278,7 +272,7 @@ namespace ScriptTrainer
 
             elementX += 200;
 
-            return button;
+            return background;
         }
         public static GameObject AddToggle(string Text, int width, GameObject panel, UnityAction<bool> action)
         {
@@ -314,10 +308,36 @@ namespace ScriptTrainer
             {
                 try
                 {
-                    EffectsRuntimeTools.AddEffect(item.Name);
+                    Debug.Log(item.Name);
+                    item.Apply(EffectContextType.None);
                 }
                 catch(Exception ex)
                 {
+                    //try
+                    //{
+                    //    item.Apply(EffectContextType.Building, 0);
+                    //}
+                    //catch (Exception ex1)
+                    //{
+                    //    try
+                    //    {
+                    //        item.Apply(EffectContextType.Deposit, 0);
+                    //    }
+                    //    catch (Exception ex3)
+                    //    {
+                    //        try
+                    //        {
+                    //            item.Apply(EffectContextType.Villager, 0);
+                    //        }
+                    //        catch (Exception ex4)
+                    //        {
+
+                    //            Debug.LogException(ex4);
+                    //        }
+                    //        Debug.LogException(ex3);
+                    //    }
+                    //    Debug.LogException(ex1);
+                    //}
                     Debug.LogException(ex);
                 }
             }
@@ -355,7 +375,7 @@ namespace ScriptTrainer
         #region[获取数据相关函数]
         private static List<EffectModel> GetItemData()
         {
-            List<EffectModel> ItemData = MainController.Instance.Settings.effects.ToList<EffectModel>();
+            List<EffectModel> ItemData = ZGGameObject.EffectModels;
             Debug.Log($"ZG:全物品数量:{ItemData.Count}");
             if (searchText != "")
             {

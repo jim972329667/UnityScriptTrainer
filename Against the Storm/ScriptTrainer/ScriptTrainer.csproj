@@ -53,7 +53,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\BepInEx_86\0Harmony20.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Game\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx, Version=5.4.5.0, Culture=neutral, processorArchitecture=MSIL">
@@ -130,6 +131,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "F:\Games\Against the Storm\BepInEx\Plugins\" /s /i /y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "E:\program files (x86)\steam\steamapps\common\Against the Storm\BepInEx\Plugins\" /s /i /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

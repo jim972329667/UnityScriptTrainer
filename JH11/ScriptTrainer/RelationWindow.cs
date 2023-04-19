@@ -48,7 +48,7 @@ namespace ScriptTrainer
             }
             else
             {
-                RelationWindow.elementY = -200;
+                RelationWindow.elementY = -185;
             }
             this.PageBar(RelationWindow.Panel);
         }
@@ -65,10 +65,10 @@ namespace ScriptTrainer
             RelationWindow.elementX += 60;
             List<string> options = new List<string>
             {
+                "全",
                 "男",
                 "女",
                 "阉",
-                "全",
             };
             Sprite bgSprite2 = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#212121FF"));
             Sprite scrollbarSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#8C9EFFFF"));
@@ -182,13 +182,13 @@ namespace ScriptTrainer
         private static void container()
         {
             RelationWindow.elementX = -205;
-            RelationWindow.elementY = 85;
+            RelationWindow.elementY = 110;
             foreach (GameObject obj in RelationWindow.ItemButtons)
             {
                 UnityEngine.Object.Destroy(obj);
             }
             RelationWindow.ItemButtons.Clear();
-            RelationWindow.ItemPanel = UIControls.createUIPanel(RelationWindow.Panel, "340", "630", null);
+            RelationWindow.ItemPanel = UIControls.createUIPanel(RelationWindow.Panel, "320", "630", null);
             RelationWindow.ItemPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
             //RelationWindow.ItemPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#FFFFFFFF");
             RelationWindow.ItemPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(20f, -10f);
@@ -263,11 +263,11 @@ namespace ScriptTrainer
             button.GetComponent<RectTransform>().sizeDelta = new Vector2(90f, 20f);
             button.GetComponent<RectTransform>().localPosition = new Vector2(-45f, -40f);
             RelationWindow.elementX += 200;
-            return button;
+            return gameObject;
         }
         public static void SpawnChangeDialog(Character character)
         {
-            GameObject canvas = UIControls.createUICanvas();    // 创建画布
+            GameObject canvas = UIControls.createUICanvas(ScriptTrainer.WindowSizeFactor.Value);    // 创建画布
             Object.DontDestroyOnLoad(canvas);
             // 设置置顶显示
             canvas.GetComponent<Canvas>().overrideSorting = true;
@@ -340,7 +340,7 @@ namespace ScriptTrainer
         }
         public static void SpawnInputDialog(string prompt, string title, string defaultText, Action<string> onFinish)
         {
-            GameObject canvas = UIControls.createUICanvas();    // 创建画布
+            GameObject canvas = UIControls.createUICanvas(ScriptTrainer.WindowSizeFactor.Value);    // 创建画布
             Object.DontDestroyOnLoad(canvas);
             // 设置置顶显示
             canvas.GetComponent<Canvas>().overrideSorting = true;
@@ -454,7 +454,7 @@ namespace ScriptTrainer
             var data = DataManager.Instance.GameData.GameRuntimeData.Characters;
             switch (RelationWindow.type)
             {
-                case 0:
+                case 1:
                     foreach(Character character in data)
                     {
                         if(character.BasicData.Gender.Value == Gender.Nan)
@@ -463,7 +463,7 @@ namespace ScriptTrainer
                         }
                     }
                     break;
-                case 1:
+                case 2:
                     foreach (Character character in data)
                     {
                         if (character.BasicData.Gender.Value == Gender.Nv)
@@ -472,7 +472,7 @@ namespace ScriptTrainer
                         }
                     }
                     break;
-                case 2:
+                case 3:
                     foreach (Character character in data)
                     {
                         if (character.BasicData.Gender.Value == Gender.Yan)
@@ -481,7 +481,7 @@ namespace ScriptTrainer
                         }
                     }
                     break;
-                case 3:
+                case 0:
                     foreach (Character character in data)
                     {
                         ItemData.Add(character);
@@ -538,7 +538,7 @@ namespace ScriptTrainer
                 foreach (Character item in dataList)
                 {
                     string itemName = RelationWindow.GetItemName(item);
-                    string itemDescription = RelationWindow.GetItemDescription(item);
+                    string itemDescription = RelationWindow.GetPlaceName(item);
                     bool flag2 = itemName.Contains(RelationWindow.searchText.Replace(" ", "")) || itemDescription.Contains(RelationWindow.searchText.Replace(" ", ""));
                     if (flag2)
                     {
@@ -575,23 +575,6 @@ namespace ScriptTrainer
             GameObject tmp = AvatarPartChange.CreteAvatar2D(UnityEngine.Object.Instantiate<GameObject>(Resources.Load(DataHelp.GetAvatar2D(item.BattleData.Avatar.Last<string>(), false).PortratAvatarPath) as GameObject, panel.transform), item);
 
             return tmp;
-        }
-        private static Sprite GetItemIcon(Character item)
-        {
-            GameObject tmpp = new GameObject("ZG_Tmp");
-            GameObject tmp = AvatarPartChange.CreteAvatar2D(UnityEngine.Object.Instantiate<GameObject>(Resources.Load(DataHelp.GetAvatar2D(item.BattleData.Avatar.Last<string>(), false).PortratAvatarPath) as GameObject, tmpp.transform), item);
-
-            Image image = tmp.GetComponentInChildren<Image>();
-            if (image != null)
-            {
-                ScriptTrainer.Instance.Log("获取图片成功");
-                Destroy(tmp);
-                Destroy(tmpp);
-                return image.sprite;
-            }
-            Destroy(tmp);
-            Destroy(tmpp);
-            return null;
         }
         // Token: 0x0400003F RID: 63
         private static GameObject Panel;

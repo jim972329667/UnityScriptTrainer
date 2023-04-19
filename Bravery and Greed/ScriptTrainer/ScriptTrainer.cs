@@ -25,6 +25,7 @@ using Input = UnityEngine.Input;
 using KeyCode = UnityEngine.KeyCode;
 using Il2CppSystem.Collections.Generic;
 using NPOI.HSSF.Record.Formula.Functions;
+using UnityGameUI;
 
 // Also make a reference in your library to Il2Cppmscorlib.dll, from BepInEx\unhollowed folder
 
@@ -81,8 +82,11 @@ namespace ScriptTrainer
 
             #region[注入修改器界面]
             // IL2CPP don't automatically inherits MonoBehaviour, so needs to add a component separatelly
+            ClassInjector.RegisterTypeInIl2Cpp<DragAndDrog>();
+            ClassInjector.RegisterTypeInIl2Cpp<MainWindow>();
             ClassInjector.RegisterTypeInIl2Cpp<ZGGameObject>();
-
+            
+            //纸巾，垃圾袋，消毒水
             // Add the monobehavior component to your personal GameObject. Try to not duplicate.
             Jim97_Trainer = GameObject.Find("Jim97_Trainer");
             if (Jim97_Trainer == null)
@@ -91,6 +95,7 @@ namespace ScriptTrainer
                 GameObject.DontDestroyOnLoad(Jim97_Trainer);
                 Jim97_Trainer.hideFlags = HideFlags.HideAndDontSave;
                 Jim97_Trainer.AddComponent<ZGGameObject>();
+                Jim97_Trainer.AddComponent<MainWindow>();
             }
             else Jim97_Trainer.AddComponent<ZGGameObject>();
             #endregion
@@ -106,12 +111,10 @@ namespace ScriptTrainer
         public ZGGameObject(IntPtr handle) : base(handle) { }
 
         public static ZGGameObject Instance;
-        //public MainWindow mw;
         Action<object> Log;
 
         public void Start()
         {
-            //mw = new MainWindow();
             Log = ScriptTrainer.Log.LogMessage;
             Instance = this;
         }
@@ -119,11 +122,19 @@ namespace ScriptTrainer
         {
             if (Input.GetKeyDown(KeyCode.F9))
             {
-                List<NetCharacter> players = NetGame.Instance.GetActiveCharacters();
-                if (!players.IsNullOrEmpty())
+                //List<NetCharacter> players = NetGame.Instance.GetActiveCharacters();
+                //if (!players.IsNullOrEmpty())
+                //{
+                //    players[0].CmdDropGold(10000,0,false,true,100);
+                //}
+                if (!MainWindow.initialized)
                 {
-                    players[0].CmdDropGold(10000,0,false,true,100);
+                    return;
                 }
+
+                MainWindow.optionToggle = !MainWindow.optionToggle;
+                MainWindow.canvas.SetActive(MainWindow.optionToggle);
+                UnityEngine.Event.current.Use();
             }
             if(Input.GetKeyDown(KeyCode.Keypad0))
             {

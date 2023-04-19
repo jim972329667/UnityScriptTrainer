@@ -63,8 +63,7 @@ namespace ScriptTrainer
             {
                 "门派",
                 "商户",
-                "贼寇",
-                "瞬移地点"
+                "贼寇"
             };
             Sprite bgSprite2 = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#212121FF"));
             Sprite scrollbarSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#8C9EFFFF"));
@@ -268,13 +267,13 @@ namespace ScriptTrainer
             gameObject5.GetComponent<RectTransform>().sizeDelta = new Vector2(60f, 20f);
             gameObject5.GetComponent<RectTransform>().localPosition = new Vector3(-50f, -10f, 0f);
             PlaceWindow.elementX += 200;
-            return gameObject5;
+            return gameObject;
         }
 
         // Token: 0x06000062 RID: 98 RVA: 0x0000694C File Offset: 0x00004B4C
         private static void SpawnInputDialog(string prompt, string title, string relation, string defaultText, Action<string> onFinish)
         {
-            GameObject canvas = UIControls.createUICanvas();
+            GameObject canvas = UIControls.createUICanvas(ScriptTrainer.WindowSizeFactor.Value);
             UnityEngine.Object.DontDestroyOnLoad(canvas);
             canvas.GetComponent<Canvas>().overrideSorting = true;
             canvas.GetComponent<Canvas>().sortingOrder = 10001;

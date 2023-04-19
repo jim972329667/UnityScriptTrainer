@@ -5,33 +5,21 @@ VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptTrainer", "ScriptTrainer\ScriptTrainer.csproj", "{56B71F4D-F911-4369-87C0-F13AD81535C2}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UnityGameUI", "..\..\UnityGameUI\UnityGameUI.shproj", "{F186AC5D-269F-4856-9479-013940A0DD5F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{56B71F4D-F911-4369-87C0-F13AD81535C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{56B71F4D-F911-4369-87C0-F13AD81535C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56B71F4D-F911-4369-87C0-F13AD81535C2}.Debug|x86.ActiveCfg = Debug|x86
-		{56B71F4D-F911-4369-87C0-F13AD81535C2}.Debug|x86.Build.0 = Debug|x86
 		{56B71F4D-F911-4369-87C0-F13AD81535C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56B71F4D-F911-4369-87C0-F13AD81535C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{56B71F4D-F911-4369-87C0-F13AD81535C2}.Release|x86.ActiveCfg = Release|x86
-		{56B71F4D-F911-4369-87C0-F13AD81535C2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF11F9A6-5955-4B29-8D1A-BD80EF1C6103}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\..\UnityGameUI\UnityGameUI.projitems*{56b71f4d-f911-4369-87c0-f13ad81535c2}*SharedItemsImports = 4
-		..\..\UnityGameUI\UnityGameUI.projitems*{f186ac5d-269f-4856-9479-013940a0dd5f}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-﻿
+﻿using ScriptTrainer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -102,14 +102,16 @@ namespace UnityGameUI
         }
 
         // 创建面板
-        public static GameObject CreatePanel(UIControls.Resources resources)
+        public static GameObject CreatePanel(UIControls.Resources resources,GameObject parent)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Panel", UIControls.s_ThickElementSize);
+
             RectTransform component = gameObject.GetComponent<RectTransform>();
             component.anchorMin = Vector2.zero;
             component.anchorMax = Vector2.one;
             component.anchoredPosition = Vector2.zero;
             component.sizeDelta = Vector2.zero;
+
             Image image = gameObject.AddComponent<Image>();
             image.sprite = resources.background;
             image.type = Image.Type.Sliced;
@@ -622,15 +624,24 @@ namespace UnityGameUI
 
             // 传入 Canvas 类型
             Canvas canvas = CanvasGO.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            
 
             CanvasScaler cs = CanvasGO.AddComponent<CanvasScaler>();
+
+           
+            //cs.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
             cs.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+            //cs.matchWidthOrHeight = 0.5f;
             cs.referencePixelsPerUnit = 100f;
             cs.referenceResolution = new Vector2(1024f, 788f);
+            //cs.scaleFactor = ScriptTrainer.ScriptTrainer.ScaleFactor.Value;
+
+            //CanvasGroup cg = CanvasGO.AddComponent<CanvasGroup>();
+            //cg.alpha = 0.65f;
 
             GraphicRaycaster gr = CanvasGO.AddComponent<GraphicRaycaster>();
-            ;
+            
             return CanvasGO;
         }
 
@@ -643,7 +654,8 @@ namespace UnityGameUI
 
             //log.LogMessage("   Creating UI Panel");
             Debug.Log("创建UI面板");
-            GameObject uiPanel = UIControls.CreatePanel(uiResources);
+            GameObject uiPanel = UIControls.CreatePanel(uiResources, canvas);
+
             uiPanel.transform.SetParent(canvas.transform, false);
 
             RectTransform rectTransform = uiPanel.GetComponent<RectTransform>();
@@ -654,6 +666,11 @@ namespace UnityGameUI
             size = Single.Parse(width);
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size);
             // 您也可以使用 rectTransform.sizeDelta = new Vector2(width, height);
+
+
+
+            //uiPanel.GetComponent<RectTransform>().sizeDelta = new Vector2(Single.Parse(width), Single.Parse(height));
+
 
             return uiPanel;
         }

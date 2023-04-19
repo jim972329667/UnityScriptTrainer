@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace ScriptTrainer
 {
-    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "Card Survival Tropical Island 内置修改器", "1.0.2")]
+    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "神州志西游 内置修改器", "1.0.0.0")]
     public class ScriptTrainer: BaseUnityPlugin
     {
         public static ScriptTrainer Instance;
@@ -17,7 +17,9 @@ namespace ScriptTrainer
         public GameObject YourTrainer;
         // 启动按键
         public static ConfigEntry<KeyCode> ShowCounter { get; set; }
-
+        public static ConfigEntry<int> UpgradeCardCount { get; set; }
+        public static ConfigEntry<int> RemoveCardCount { get; set; }
+        public static ConfigEntry<int> HandSizeCount { get; set; }
         public void Awake()
         {
             Instance = this;
@@ -29,6 +31,9 @@ namespace ScriptTrainer
 
             #region 读取游戏配置
             ShowCounter = Config.Bind("修改器快捷键", "Key", KeyCode.F9);
+            UpgradeCardCount = Config.Bind("选择卡牌升级界面的选择数量", "Count", 1);
+            RemoveCardCount = Config.Bind("选择卡牌移除界面的选择数量", "Count", 1);
+            HandSizeCount = Config.Bind("增加最大手牌数量", "Count", 1);
             #endregion
 
             #region 注入游戏修改器UI
@@ -92,4 +97,5 @@ namespace ScriptTrainer
             }
         }
     }
+  
 }

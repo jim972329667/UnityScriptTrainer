@@ -9,7 +9,7 @@ using VWVO.ConfigClass.Global;
 
 namespace ScriptTrainer
 {
-    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "江湖十一 内置修改器", "1.1.3")]
+    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "江湖十一 内置修改器", "1.1.4")]
     public class ScriptTrainer : BaseUnityPlugin
     {
         public static ScriptTrainer Instance;
@@ -35,8 +35,10 @@ namespace ScriptTrainer
         public static ConfigEntry<bool> DuoQingLv { get; set; }
         public static ConfigEntry<bool> TimeScale { get; set; }
         public static ConfigEntry<float> TimeScaleRate { get; set; }
+        public static bool IsChangedTime = false;
         public static ConfigEntry<bool> RestartTrainer { get; set; }
         public static ConfigEntry<int> RestartTrainerTime { get; set; }
+        public static ConfigEntry<float> WindowSizeFactor { get; set; }
         #endregion
 
         public void Awake()
@@ -66,7 +68,7 @@ namespace ScriptTrainer
             ScriptTrainer.TimeScale = Config.Bind<bool>("游戏时间修改", "Value", false);
             ScriptTrainer.RestartTrainerTime = Config.Bind<int>("重新载入修改器间隔(分钟)", "time", 30);
             ScriptTrainer.RestartTrainer = Config.Bind<bool>("重新载入修改器", "Value", false);
-            //ScriptTrainer.ScaleFactor = Config.Bind<float>("修改器界面放大设置", "ScaleFactor", 1);
+            WindowSizeFactor = Config.Bind("修改器缩放倍率", "Factor", 1f, "控制修改器界面放大或缩小");
             #endregion
 
 
@@ -110,10 +112,6 @@ namespace ScriptTrainer
             if (TimeScale.Value)
             {
                 Time.timeScale = TimeScaleRate.Value;
-            }
-            else
-            {
-                Time.timeScale = 1f;
             }
         }
         public void FixedUpdate()

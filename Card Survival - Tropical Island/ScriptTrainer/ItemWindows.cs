@@ -266,7 +266,7 @@ namespace ScriptTrainer
 
             elementX += 200;
 
-            return button;
+            return background;
         }
         public static GameObject AddToggle(string Text, int width, GameObject panel, UnityAction<bool> action)
         {
@@ -300,7 +300,7 @@ namespace ScriptTrainer
         {
             for (int j = 0; j < count; j++)
             {
-                if(item.IsEquipment)
+                if(item.IsEquipment || item.CardType == CardTypes.Environment)
                     GameManager.GiveCard(item, true);
                 else
                     GameManager.GiveCard(item, false);
@@ -385,7 +385,26 @@ namespace ScriptTrainer
         }
         private static string GetItemName(CardData item)
         {
-            return item.CardName;
+            if(item.CardType == CardTypes.Blueprint)
+                return item.CardName + "(蓝图)";
+            else if(item.CardType == CardTypes.Location)
+                return item.CardName + "(地点)";
+            else if (item.CardType == CardTypes.Environment)
+                return item.CardName + "(环境)";
+            else if (item.CardType == CardTypes.Event)
+                return item.CardName + "(事件)";
+            else if (item.CardType == CardTypes.Weather)
+                return item.CardName + "(天气)";
+            else if (item.CardType == CardTypes.Item)
+                return item.CardName + "(物品)";
+            else if (item.CardType == CardTypes.EnvImprovement)
+                return item.CardName + "(升级)";
+            else if (item.CardType == CardTypes.Liquid)
+                return item.CardName + "(液体)";
+            else if (item.CardType == CardTypes.Explorable)
+                return item.CardName + "(可探索地点)";
+            else
+                return item.CardName + $"{item.CardType}";
         }
         private static string GetItemDescription(CardData item)
         {
