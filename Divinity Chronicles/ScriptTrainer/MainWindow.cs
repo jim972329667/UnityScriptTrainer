@@ -28,6 +28,7 @@ namespace ScriptTrainer
         private static GameObject uiPanel = null;
         public static readonly int width = Mathf.Min(Screen.width, 740);
         private static readonly int height = (Screen.height < 400) ? Screen.height : (450);
+        public static DragAndDrog dragAndDrog = null;
 
         // 按钮位置
         private static int elementX = initialX;
@@ -59,6 +60,7 @@ namespace ScriptTrainer
                 }
                 else
                 {
+                    dragAndDrog.isMouseDrag = false;
                     //MainController.Instance.AppServices.InputService.Config.Enable();
                     Game.Get().EnableInput();
                 }
@@ -193,20 +195,19 @@ namespace ScriptTrainer
                 GameObject background = UIControls.createUIPanel(canvas, (height + 40).ToString(), (width + 40).ToString(), null);
                 background.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");
                 // 将面板添加到画布, 请参阅 createUIPanel 了解我们将高度/宽度作为字符串传递的原因
-                uiPanel = UIControls.createUIPanel(canvas, height.ToString(), width.ToString(), null);
+                uiPanel = UIControls.createUIPanel(background, height.ToString(), width.ToString(), null);
                 // 设置背景颜色
                 uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
 
                 // 这就是我们将如何挂钩鼠标事件以进行窗口拖动
-                EventTrigger comp1 = background.AddComponent<EventTrigger>();
-                WindowDragHandler comp2 = background.AddComponent<WindowDragHandler>();
+                dragAndDrog = background.AddComponent<DragAndDrog>();
 
 
                 #region[面板元素]
 
 
                 #region[创建标题 和 关闭按钮]
-                AddTitle($"{ScriptTrainer.Instance.Info.Metadata.Name} by:Jim97");
+                AddTitle(background, $"{ScriptTrainer.Instance.Info.Metadata.Name} by:Jim97");
 
                 GameObject closeButton = UIControls.createUIButton(uiPanel, "#B71C1CFF", "X", () =>
                 {
@@ -229,6 +230,12 @@ namespace ScriptTrainer
                     AddButton("冥想卡牌", BasicScripts, () =>
                     {
                         Scripts.MeditateCard();
+                        optionToggle = false;
+                        canvas.SetActive(optionToggle);
+                    });
+                    AddButton("唐僧布道", BasicScripts, () =>
+                    {
+                        Scripts.PickCardsFromDeckForSummonNPC();
                         optionToggle = false;
                         canvas.SetActive(optionToggle);
                     });
@@ -534,7 +541,7 @@ namespace ScriptTrainer
             return uiText;
         }
         // 添加标题
-        public static GameObject AddTitle(string Title)
+        public static GameObject AddTitle(GameObject canvas, string Title)
         {
             GameObject TitleBackground = UIControls.createUIPanel(canvas, "30", (width - 20).ToString(), null);
             TitleBackground.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");

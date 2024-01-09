@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using static UnityEngine.UI.Image;
 using Random = UnityEngine.Random;
@@ -67,13 +68,19 @@ namespace ScriptTrainer
         //Traverse.Create(__instance).Field("initialNumberOfUses").SetValue(99);
         //initialNumberOfUses 是成员名称， T为该成员类型
         #endregion
-        [HarmonyPatch(typeof(MetaPerksService), "GetMaxPreparationPoints")]
-        public class MetaPerksServiceOverridePatch_GetMaxPreparationPoints
+
+        [HarmonyPatch]
+        public class MetaPerksServicePatch
         {
+            public static IEnumerable<MethodBase> TargetMethods()
+            {
+                yield return AccessTools.Method(typeof(MetaPerksService), "GetMaxPreparationPoints") != null ? AccessTools.Method(typeof(MetaPerksService), "GetMaxPreparationPoints") : AccessTools.Method(typeof(MetaPerksService), "GetBasePreparationPoints");
+                //yield return AccessTools.Method(typeof(MetaPerksService), "OnPlayerGetOutVehicle");
+            }
             [HarmonyPostfix]
             public static void Postfix(ref int __result)
             {
-                if(InfinitePreparationPoints)
+                if (InfinitePreparationPoints)
                     __result = 99;
             }
         }

@@ -14,7 +14,6 @@ namespace UnityGameUI
 
         public TooltipGUI()
         {
-            //BepInExLoader.log.LogMessage("TooltipGUI Loaded");
             instance = this;
         }
 
@@ -22,7 +21,6 @@ namespace UnityGameUI
         {
             if (!fired)
             {
-                Debug.Log("TooltipGUI OnGUI Fired");
                 fired = true;
             }
 

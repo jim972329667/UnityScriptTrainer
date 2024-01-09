@@ -70,13 +70,13 @@ namespace ScriptTrainer
 
         }
 
-        [HarmonyPatch(typeof(MinigameChest), "Price", MethodType.Getter)]
-        class MinigameChestPricePatch
+        [HarmonyPatch(typeof(PriceTag), "Initialize")]
+        class PriceTagOverridePatch_Initialize
         {
-            [HarmonyPostfix]
-            public static void Postfix(ref int __result)
+            [HarmonyPrefix]
+            public static void Prefix(ref int price)
             {
-                __result /= 2;
+                price /= 2;
             }
         }
         #endregion

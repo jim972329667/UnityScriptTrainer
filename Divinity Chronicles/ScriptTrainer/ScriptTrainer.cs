@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace ScriptTrainer
 {
-    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "神州志西游 内置修改器", "1.0.0.0")]
+    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "神州志西游 内置修改器", "1.0.2")]
     public class ScriptTrainer: BaseUnityPlugin
     {
         public static ScriptTrainer Instance;

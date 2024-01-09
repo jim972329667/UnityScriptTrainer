@@ -105,8 +105,6 @@ namespace ScriptTrainer
         {
             if (canvas == null)
             {
-                Debug.Log("创建 UI 元素");
-
                 canvas = UIControls.createUICanvas();
                 Object.DontDestroyOnLoad(canvas);
                 // 设置背景
@@ -212,7 +210,7 @@ namespace ScriptTrainer
                 #endregion
 
                 canvas.SetActive(optionToggle);
-                Debug.Log("初始化完成!");
+                ScriptTrainer.WriteLog("初始化完成!");
             }
         }
 

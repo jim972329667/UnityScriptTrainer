@@ -176,7 +176,7 @@ namespace ScriptTrainer
                 {
                     UIWindows.SpawnInputDialog($"您想获得多少个{GetItemName(item)}？", "获得", "100", (string count) =>
                     {
-                        Debug.Log($"已获得{count}个{GetItemName(item)}到背包。{item.Name}");
+                        ScriptTrainer.WriteLog($"已获得{count}个{GetItemName(item)}到背包。{item.Name}");
 
                         SpawnItem(item, count.ConvertToIntDef(100));
                     });
@@ -192,7 +192,6 @@ namespace ScriptTrainer
 
         public static void SpawnEquipmentInputDialog(string ButtonText, string Description, UnityAction onFinish)
         {
-            Debug.Log($"ZG:{Description}");
             //创建画布
             GameObject canvas = UIControls.createUICanvas();
             Object.DontDestroyOnLoad(canvas);
@@ -303,28 +302,61 @@ namespace ScriptTrainer
         public static void SpawnItem(GoodModel item, int count)
         {
             Good good = new Good(item.Name, count);
-            if (GameController.Instance != null)
+
+            foreach (var x in MainController.Instance.Settings.Buildings)
             {
-                var storage = GameController.Instance.GameServices.StorageService.GetStorage();
-                if (storage.CanStore(good))
-                    storage.Store(good);
-                else
-                {
-                    Debug.Log("添加失败");
-                }
+                ScriptTrainer.WriteLog($"ZG Buildings:{x.displayName.Text}");
             }
-            else if(MetaController.Instance != null)
+            foreach (var x in MainController.Instance.Settings.Relics)
+            {
+                ScriptTrainer.WriteLog($"ZG Relics:{x.displayName.Text}");
+            }
+            foreach (var x in MainController.Instance.Settings.workshops)
+            {
+                ScriptTrainer.WriteLog($"ZG Workshops:{x.displayName.Text}");
+            }
+            foreach (var x in MainController.Instance.Settings.mines)
+            {
+                ScriptTrainer.WriteLog($"ZG Mines:{x.displayName.Text}");
+            }
+            foreach (var x in MainController.Instance.Settings.Institutions)
+            {
+                ScriptTrainer.WriteLog($"ZG Institutions:{x.displayName.Text}");
+            }
+            foreach (var x in MainController.Instance.Settings.BuildingCategories)
+            {
+                ScriptTrainer.WriteLog($"ZG BuildingCategories:{x.displayName.Text}");
+            }
+
+
+            foreach (var x in MainController.Instance.Settings.cycleEffects)
+            {
+                ScriptTrainer.WriteLog($"ZG CycleEffect:{x.DisplayName}");
+            }
+            foreach (var x in MainController.Instance.Settings.altarEffects)
+            {
+                ScriptTrainer.WriteLog($"ZG AltarEffects:{x.Name}");
+            }
+            foreach (var x in MainController.Instance.Settings.conditionalSeasonalEffects)
+            {
+                ScriptTrainer.WriteLog($"ZG ConditionalSeasonalEffects:{x.DisplayName}");
+            }
+            foreach (var x in MainController.Instance.Settings.simpleSeasonalEffects)
+            {
+                ScriptTrainer.WriteLog($"ZG SimpleSeasonalEffects:{x.DisplayName}");
+            }
+
+
+            if (MetaController.Instance != null)
             {
                 var storage = MetaController.Instance.MetaServices.MetaEconomyService;
-
-
                 var storage2 = MetaController.Instance.MetaServices.MetaStateService.EmbarkBonuses;
 
                 if (item.Name == "_Meta Food Stockpiles" || item.Name == "_Meta Machinery" || item.Name == "_Meta Artifacts")
                 {
                     MetaCurrencyModel metaCurrency = storage.GetMetaCurrency(item);
                     storage.Add(new MetaCurrency(metaCurrency.Name, count));
-                    Debug.Log(metaCurrency.Name);
+                    ScriptTrainer.WriteLog(metaCurrency.Name);
                 }
                 else
                 {
@@ -332,29 +364,16 @@ namespace ScriptTrainer
                     //string name = GetEmbarkName(item);
                     if (/*!x.Contains(name)*/storage2.goodsOptions.Count < 27)
                     {
-                        //x.Add(name);
                         storage2.goodsOptions.Add(new GoodPickState() { name = item.Name, amount = count, cost = 0 });
                     }
-                    //Debug.Log($"{good.name};{item.name.Split(']')[1]}");
-                    //foreach (var xx in x)
-                    //{
-                    //    Debug.Log($"embarkGoods;{xx}");
-                    //}
-                    //foreach (GoodPickState xx in storage2.goodsOptions)
-                    //{
-                    //    Debug.Log($"goodsOptions;{xx.name};{xx.amount};{xx.cost}");
-                    //}
-                    //foreach (GoodPickState xx in storage2.goodsPicked)
-                    //{
-                    //    Debug.Log($"goodsPicked;{xx.name};{xx.amount};{xx.cost}");
-                    //}
                 }
             }
-            else
-            {
-                Debug.Log("ZG");
-            }
 
+            if(GameController.Instance != null)
+            {
+                var storage = GameController.Instance.GameServices.StorageService.GetStorage();
+                storage.Store(good);
+            }
         }
 
         private static string GetEmbarkName(GoodModel item)
@@ -379,7 +398,7 @@ namespace ScriptTrainer
             //{
             //    Debug.Log($"ZG;{item.regularEffect.Name};{item.Name};{item.upgradedEffect.Name}");
             //}
-            Debug.Log($"ZG:全物品数量:{ItemData.Count}");
+            ScriptTrainer.WriteLog($"ZG:全物品数量:{ItemData.Count}");
             if (searchText != "")
             {
                 ItemData = FilterItemData(ItemData);

@@ -1,6 +1,8 @@
 ﻿using JTW;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -184,7 +186,7 @@ namespace ScriptTrainer
             int num = 0;
             foreach (Card item in GetItemData())
             {
-                var btn = CreateItemButton("获得", GetItemName(item), GetItemIcon(item), ItemPanel, () =>
+                var btn = CreateItemButton("获得", item, ItemPanel, () =>
                 {
                     SpawnEquipmentInputDialog("获得", GetItemDescription(item), () =>
                     {
@@ -249,7 +251,6 @@ namespace ScriptTrainer
             uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#37474FFF");
             //创建物品介绍
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            string DefaultColor = "#FFFFFFFF";
 
             GameObject m_tooltip = Object.Instantiate<GameObject>(m_tooltipcompanionSetInLocation);
 
@@ -303,7 +304,7 @@ namespace ScriptTrainer
             //字体颜色为白色
             closeButton.GetComponentInChildren<Text>().color = UIControls.HTMLString2Color("#FFFFFFFF");
         }
-        private static GameObject CreateItemButton(string ButtonText, string ItemName, Sprite ItemIcon, GameObject panel, UnityAction action)
+        private static GameObject CreateItemButton(string ButtonText, Card Item, GameObject panel, UnityAction action)
         {
             //按钮宽 200 高 50
             int buttonWidth = 190;
@@ -317,19 +318,21 @@ namespace ScriptTrainer
             background.GetComponent<Image>().color = UIControls.HTMLString2Color("#455A64FF");
             background.GetComponent<RectTransform>().localPosition = new Vector3(elementX, elementY, 0);
 
+            var tip = background.AddComponent<TooltipGUI>();
+            tip.Init(GetItemDescription(Item));
 
             GameObject background_icon = UIControls.createUIPanel(background, buttonHeight.ToString(), "50", null);
             background_icon.GetComponent<Image>().color = UIControls.HTMLString2Color(qualityColor);
             background_icon.GetComponent<RectTransform>().anchoredPosition = new Vector2(70, 0);
 
-            GameObject icon = UIControls.createUIImage(background_icon, ItemIcon);
+            GameObject icon = UIControls.createUIImage(background_icon, GetItemIcon(Item));
             icon.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 60);
             icon.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
 
             //创建文字
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
             GameObject uiText = UIControls.createUIText(background, txtBgSprite, ColorUtility.ToHtmlStringRGBA(Color.white));
-            uiText.GetComponent<Text>().text = ItemName;
+            uiText.GetComponent<Text>().text = GetItemName(Item);
             uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 5, 0);
 
             //创建按钮
@@ -340,7 +343,7 @@ namespace ScriptTrainer
 
             elementX += 200;
 
-            return button;
+            return background;
         }
         public static GameObject AddToggle(string Text, int width, GameObject panel, UnityAction<bool> action)
         {
@@ -376,6 +379,7 @@ namespace ScriptTrainer
         {
             List<Card> list = new List<Card>();
             list.Add(item);
+            Debug.Log(item.GetType());
             Game.Get().GetPlayer().AddCardsToDeck(list, null);
         }
 
@@ -397,12 +401,27 @@ namespace ScriptTrainer
 
             if (IsAllCard)
             {
-                ItemData.AddRange(new CardSetHolyMonk().Cards);
-                ItemData.AddRange(new CardSetTheSwineKing().Cards);
-                ItemData.AddRange(new CardSetNeutral().Cards);
-                ItemData.AddRange(new CardSetSpecial().Cards);
-                ItemData.AddRange(new CardSetWhiteDragon().Cards);
-                ItemData.AddRange(new CardSetWukong().Cards);
+                IEnumerable<Type> enumerable = from t in Assembly.GetAssembly(typeof(Card)).GetTypes()
+                                               where t.IsSubclassOf(typeof(Card))
+                                               select t;
+                new List<Card>();
+                foreach (Type type in enumerable)
+                {
+                    if (!type.IsAbstract && !(type.GetConstructor(Type.EmptyTypes) == null))
+                    {
+                        Card card = (Card)Activator.CreateInstance(type);
+                        if (card.Rarity != Rarity.NATIVE)
+                        {
+                            ItemData.Add(card);
+                        }
+                    }
+                }
+                //ItemData.AddRange(new CardSetHolyMonk().Cards);
+                //ItemData.AddRange(new CardSetTheSwineKing().Cards);
+                //ItemData.AddRange(new CardSetNeutral().Cards);
+                //ItemData.AddRange(new CardSetSpecial().Cards);
+                //ItemData.AddRange(new CardSetWhiteDragon().Cards);
+                //ItemData.AddRange(new CardSetWukong().Cards);
             }
             else
             {

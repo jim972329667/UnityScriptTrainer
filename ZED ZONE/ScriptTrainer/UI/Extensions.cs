@@ -12,6 +12,7 @@ namespace ScriptTrainer.UI
         // Load Image ICall
 
         // Convert Hex string to Color32
+        [MonoPInvokeCallback]
         public static Color32 HexToColor(this string hexString)
         {
             string tmp = hexString;
@@ -32,6 +33,7 @@ namespace ScriptTrainer.UI
             }
             return new Color32(r, g, b, a);
         }
+        [MonoPInvokeCallback]
         public static int ConvertToIntDef(this string input, int defaultValue)
         {
             int result;
@@ -41,6 +43,7 @@ namespace ScriptTrainer.UI
             }
             return defaultValue;
         }
+        [MonoPInvokeCallback]
         public static float ConvertToFloatDef(this string input, float defaultValue)
         {
             float result;
@@ -50,6 +53,7 @@ namespace ScriptTrainer.UI
             }
             return defaultValue;
         }
+        [MonoPInvokeCallback]
         public static List<string> GetSeparateSubString(this string input, int charNumber)
         {
             List<string> arrlist = new List<string>();
@@ -67,6 +71,7 @@ namespace ScriptTrainer.UI
             }
             return arrlist;
         }
+        [MonoPInvokeCallback]
         public static string GetSeparateString(this string input, int charNumber)
         {
             string arrlist = string.Empty;
@@ -160,12 +165,29 @@ namespace ScriptTrainer.UI
 
             return arrlist;
         }
+        [MonoPInvokeCallback]
         public static string GetColorText(this string text, string color)
         {
             if (color.ToUpper() == "#FFFFFF" || color.ToUpper() == "#FFFFFFFF")
                 return text;
             else
                 return $"<color={color}>{text}</color>";
+        }
+
+        public static int GetMaxSortingOrder()
+        {
+            int maxSortingOrder = 1;
+            foreach (var x in UnityEngine.GameObject.FindObjectsOfType<Canvas>())
+            {
+                if (x.overrideSorting)
+                {
+                    if (maxSortingOrder < x.sortingOrder)
+                    {
+                        maxSortingOrder = x.sortingOrder + 1;
+                    }
+                }
+            }
+            return maxSortingOrder;
         }
     }
 }

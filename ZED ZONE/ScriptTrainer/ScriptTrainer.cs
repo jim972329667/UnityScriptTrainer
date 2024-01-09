@@ -11,21 +11,23 @@ using HarmonyLib;
 
 // From BepInEx.IL2CPP.dll in BepInEx/core folder
 using BepInEx.IL2CPP;
-using BepInEx.IL2CPP.Utils.Collections;
 
 // From UnhollowerBaseLib.dll  BepInEx/core folder
-using UnhollowerRuntimeLib;
 
 // From UnityEngine.CoreModule.dll in BepInEx\unhollowed folder
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
-using BepInEx.IL2CPP.UnityEngine;
 
 using Input = UnityEngine.Input;
 using KeyCode = UnityEngine.KeyCode;
-using Il2CppSystem.Collections.Generic;
 using ScriptTrainer.UI;
+using Il2CppInterop.Runtime.Injection;
+using BepInEx.Unity.IL2CPP;
+using UnityEngine.Events;
+using UnityEngine.UI;
+using System.IO;
+using Il2CppInterop.Runtime;
+using UnityEngine.SceneManagement;
+using UnityEditor;
 
 
 // Also make a reference in your library to Il2Cppmscorlib.dll, from BepInEx\unhollowed folder
@@ -47,8 +49,28 @@ namespace ScriptTrainer
         public static ScriptTrainer Instance;
 
         public const string PluginName = "ZED ZONE 内置修改器";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
 
+        public void WriteLogWithType(object message, LogType logType = LogType.Log)
+        {
+            string text = (message?.ToString()) ?? "";
+            switch (logType)
+            {
+                case LogType.Error:
+                case LogType.Exception:
+                    Log.LogError(text);
+                    break;
+                case LogType.Assert:
+                case LogType.Log:
+                    Log.LogMessage(text);
+                    break;
+                case LogType.Warning:
+                    Log.LogWarning(text);
+                    break;
+            }
+        }
+
+        [MonoPInvokeCallback]
         public static void WriteLog(string message)
         {
             Log.LogMessage(message);
@@ -66,16 +88,24 @@ namespace ScriptTrainer
             if (!EnableTrainer.Value)
                 return;
 
-
             Harmony harmony = new Harmony("ScriptTrainer.Jim97.Harmony");
             harmony.PatchAll();
+            LateInit();
+            //Universe.Init(1f, new Action(LateInit), new Action<string, LogType>(WriteLogWithType), new UniverseLibConfig()
+            //{
+            //    Unhollowed_Modules_Folder = Path.Combine(Paths.BepInExRootPath, "interop")
+            //});
 
+        }
+        public void LateInit()
+        {
             #region[注入修改器界面]
             // IL2CPP don't automatically inherits MonoBehaviour, so needs to add a component separatelly
             ClassInjector.RegisterTypeInIl2Cpp<ZGGameObject>();
-            ClassInjector.RegisterTypeInIl2Cpp<DragAndDrog>();
             ClassInjector.RegisterTypeInIl2Cpp<UIControls>();
             ClassInjector.RegisterTypeInIl2Cpp<TooltipGUI>();
+            ClassInjector.RegisterTypeInIl2Cpp<MainWindow>();
+            //ClassInjector.RegisterTypeInIl2Cpp<ItemWindow>();
             // Add the monobehavior component to your personal GameObject. Try to not duplicate.
             Jim97_Trainer = GameObject.Find("Jim97_Trainer");
             if (Jim97_Trainer == null)
@@ -94,32 +124,42 @@ namespace ScriptTrainer
     }
     public class ZGGameObject : MonoBehaviour
     {
-        public ZGGameObject(IntPtr handle) : base(handle) { }
+        public ZGGameObject(IntPtr handle) : base(handle) 
+        {
+            Instance = this;
+            Log = ScriptTrainer.Log.LogMessage;
+        }
 
         public static ZGGameObject Instance;
-        public MainWindow mw;
+        public MainWindow mw = null;
+        private GameObject UI;
+
         Action<object> Log;
 
-        public void Start()
-        {
-            Log = ScriptTrainer.Log.LogMessage;
-            Instance = this;
-            mw = new MainWindow();
-        }
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F9))
+            if (mw == null)
             {
+                mw = this.gameObject.AddComponent<MainWindow>();
+                Log($"Start MainWindow");
+            }
+            if (Input.GetKeyDown(KeyCode.F9) && GameController.instance.mainCanvas != null)
+            {
+                Log(GameController.instance.mainCanvas.renderMode);
                 if (!MainWindow.initialized)
                 {
                     MainWindow.Initialize();
+                    Log($"MainWindow Initialized");
+                }
+                if (MainWindow.initialized)
+                {
+                    MainWindow.optionToggle = !MainWindow.optionToggle;
+                    MainWindow.canvas.SetActive(MainWindow.optionToggle);
+                    UnityEngine.Event.current.Use();
                 }
 
-                MainWindow.optionToggle = !MainWindow.optionToggle;
-                MainWindow.canvas.SetActive(MainWindow.optionToggle);
-                UnityEngine.Event.current.Use();
             }
-
         }
     }
+
 }

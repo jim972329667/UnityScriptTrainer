@@ -12,6 +12,7 @@ namespace ScriptTrainer.UI
     public static class UIObject
     {
         #region[复选框]
+        [MonoPInvokeCallback]
         public static GameObject AddToggle(this GameObject panel, ref Vector2 Position, string Text, int width,  UnityAction<bool> action)
         {
             //计算x轴偏移
@@ -32,6 +33,7 @@ namespace ScriptTrainer.UI
 
             return uiToggle;
         }
+        [MonoPInvokeCallback]
         public static GameObject AddToggle(this GameObject panel, ref Vector2 Position, string Text, int width, Action<bool> action)
         {
             //计算x轴偏移
@@ -55,6 +57,7 @@ namespace ScriptTrainer.UI
         #endregion
 
         #region[按钮]
+        [MonoPInvokeCallback]
         public static GameObject AddButton(this GameObject panel, ref Vector2 Position, string Text, Action action,int width = 110)
         {
             string backgroundColor = "#8C9EFFFF";
@@ -77,11 +80,11 @@ namespace ScriptTrainer.UI
         #endregion
 
         #region[输入框]
+        [MonoPInvokeCallback]
         public static GameObject AddInputField(this GameObject panel, ref Vector2 Position, string Text, int width, string defaultText,  UnityAction<string> action)
         {
             // label
-            Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(panel, txtBgSprite, "#FFFFFFFF");
+            GameObject uiText = UIControls.createUIText(panel, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = Text;
             uiText.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
 
@@ -114,12 +117,12 @@ namespace ScriptTrainer.UI
             Position.x += (width - text1.preferredWidth - 15) / 2 + 15;//与下一个控件间隔10
             return uiInputField;
         }
-
+        [MonoPInvokeCallback]
         public static GameObject AddInputField(this GameObject panel, ref Vector2 Position, string Text, int width, string defaultText, Action<string> action)
         {
             // label
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(panel, txtBgSprite, "#FFFFFFFF");
+            GameObject uiText = UIControls.createUIText(panel, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = Text;
             uiText.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
 
@@ -155,11 +158,12 @@ namespace ScriptTrainer.UI
         #endregion
 
         #region[下拉框]
+        [MonoPInvokeCallback]
         public static GameObject AddDropdown(this GameObject panel, ref Vector2 Position, string Text, int width, List<string> options, UnityAction<int> action)
         {
             // label
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(panel, txtBgSprite, "#FFFFFFFF");
+            GameObject uiText = UIControls.createUIText(panel, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = Text;
             uiText.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
 
@@ -196,10 +200,11 @@ namespace ScriptTrainer.UI
         #endregion
 
         #region[小标题]
+        [MonoPInvokeCallback]
         public static GameObject AddH3(this GameObject panel, ref Vector2 Position, string text)
         {
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(panel, txtBgSprite, "#FFFFFFFF");
+            GameObject uiText = UIControls.createUIText(panel, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = text;
             // 设置字体样式为h3小标题
             uiText.GetComponent<Text>().fontSize = 14;
@@ -219,6 +224,7 @@ namespace ScriptTrainer.UI
         #endregion
 
         #region[换行]
+        [MonoPInvokeCallback]
         public static void hr(this GameObject panel, ref Vector2 Position,   int offsetX = 0, int offsetY = 0)
         {
             Vector2 temp = panel.GetComponent<RectTransform>().sizeDelta;

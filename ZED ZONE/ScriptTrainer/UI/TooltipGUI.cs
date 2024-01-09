@@ -4,83 +4,85 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using static UnityEngine.RuleTile.TilingRule;
 
 namespace ScriptTrainer.UI
 {
     public class TooltipGUI : MonoBehaviour
     {
         public TooltipGUI(IntPtr handle) : base(handle) { }
-        public bool EnableTooltip = false;
-        public List<string> Tooltip = new List<string>();
-        public float WindowSizeFactor = 1;
-        private GUIStyle tooltipStyle;
+        public bool EnableTooltip
+        {
+            get
+            {
+                return background?.active ?? false;
+            }
+            set
+            {
+                background?.SetActive(value);
+            }
+        }
 
+        public static readonly Color DefaultBackgroundColor = new Color(0.45f, 0.45f, 0.45f, 1);
+        public static readonly Color DefaultTextColor = new Color(1f, 1f, 1f, 1);
+        public string Tooltip = string.Empty;
+        public GameObject canvas = null;
+        public GameObject background = null;
+        public void Initialize(string tip, int sortingOrder, Color backgroundColor = default(Color), Color textColor = default(Color))
+        {
+            Tooltip = tip;
+            canvas = UIControls.createUICanvas(ScriptTrainer.WindowSizeFactor.Value);
+            canvas.GetComponent<Canvas>().overrideSorting = true;
+            canvas.GetComponent<Canvas>().sortingOrder = sortingOrder;
+
+            background = UIControls.createUIPanel(canvas, "40", "150", null);
+            background.GetComponent<Image>().color = ((backgroundColor == default) ? DefaultBackgroundColor : backgroundColor);
+            
+
+            GameObject uiText = UIControls.createUIText(background, "#FFFFFFFF");
+            uiText.GetComponent<Text>().color = ((textColor == default) ? DefaultTextColor : textColor);
+            uiText.GetComponent<Text>().text = Tooltip;
+            int size = 40;
+            uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(150, size);
+            size = (int)(uiText.GetComponent<Text>().preferredHeight + 10);
+            uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(150, size);
+            background.GetComponent<RectTransform>().sizeDelta = new Vector2(160, size+10);
+
+            EnableTooltip = false;
+        }
         public void Update()
         {
             var mousepos = UnityEngine.Input.mousePosition;
 
-            if (base.gameObject != null)
+            if (background != null && !string.IsNullOrEmpty(Tooltip))
             {
-                Vector2 size = base.gameObject.GetComponent<RectTransform>().rect.size;
-                if (mousepos.x < base.gameObject.transform.position.x + size.x * WindowSizeFactor / 2 && mousepos.x > base.gameObject.transform.position.x - size.x * WindowSizeFactor / 2)
+                //Vector2 size = base.gameObject.GetComponent<RectTransform>().rect.size;
+                //if (mousepos.x < base.gameObject.transform.position.x + size.x * WindowSizeFactor / 2 && mousepos.x > base.gameObject.transform.position.x - size.x * WindowSizeFactor / 2)
+                //{
+                //    if (mousepos.y < base.gameObject.transform.position.y + size.y * WindowSizeFactor / 2 && mousepos.y > base.gameObject.transform.position.y - size.y * WindowSizeFactor / 2)
+                //    {
+                //        
+                //    }
+                //}
+
+                if(RectTransformUtility.RectangleContainsScreenPoint(base.gameObject.GetComponent<RectTransform>(), Input.mousePosition))
                 {
-                    if (mousepos.y < base.gameObject.transform.position.y + size.y * WindowSizeFactor / 2 && mousepos.y > base.gameObject.transform.position.y - size.y * WindowSizeFactor / 2)
-                    {
-                        EnableTooltip = true;
-                        return;
-                    }
+                    var x = background.GetComponent<RectTransform>().sizeDelta;
+                    background.transform.position = mousepos + new Vector3(x.x/2, -x.y/2, 0) + new Vector3(10,0,0);
+                    EnableTooltip = true;
+                    return;
                 }
             }
 
             EnableTooltip = false;
         }
-        public void OnGUI()
+        public void OnDestroy()
         {
-            //var mousepos = EventSystem.current.currentInputModule.input.mousePosition; // Instead of Input.mousePosition
-            var mousepos = UnityEngine.Input.mousePosition;
-            if (Tooltip.Count != 0 && EnableTooltip == true)
-            {
-                GetGUIStyle();
-                float RectX = mousepos.x + 15;
-                float RectY = Screen.height - mousepos.y + 15;
-                float width = GetMaxText();
-                // The +15 are cursor offsets
-                for (int i = 0; i < Tooltip.Count; i++)
-                {
-                    GUI.backgroundColor = Color.black;
-                    GUIContent content = new GUIContent(Tooltip[i]);
-                    //float width = tooltipStyle.CalcSize(content).x;
-                    float height = tooltipStyle.CalcSize(content).y;
-
-                    GUI.Box(new Rect(RectX, RectY, width, Math.Max(25f, height)), content, tooltipStyle);
-                    RectY += Math.Max(25f, height);
-                }
-            }
+            UnityEngine.Object.Destroy(canvas);
+            UnityEngine.Object.Destroy(base.gameObject);
         }
-        private float GetMaxText()
-        {
-            float value = 0;
-            if (Tooltip.Count != 0)
-            {
-                for (int i = 0; i < Tooltip.Count; i++)
-                {
-                    GUIContent content = new GUIContent(Tooltip[i]);
-                    float width = tooltipStyle.CalcSize(content).x;
-                    if (width > value)
-                        value = width;
-                }
-            }
-            return value;
-        }
-        private void GetGUIStyle()
-        {
-            tooltipStyle = new GUIStyle(GUI.skin.box)
-            {
-                richText = true,
-                alignment = TextAnchor.MiddleLeft
-            };
-            tooltipStyle.normal.textColor = Color.white;
-            tooltipStyle.fontSize = (int)(18 * WindowSizeFactor);
-        }
+        
     }
 }

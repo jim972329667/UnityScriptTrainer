@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -39,6 +40,7 @@ namespace ScriptTrainer.UI
         #region[元素]
 
         // 创建根元素
+        [MonoPInvokeCallback]
         private static GameObject CreateUIElementRoot(string name, Vector2 size)
         {
             GameObject gameObject = new GameObject(name);
@@ -48,6 +50,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建UI对象
+        [MonoPInvokeCallback]
         private static GameObject CreateUIObject(string name, GameObject parent)
         {
             GameObject gameObject = new GameObject(name);
@@ -57,6 +60,7 @@ namespace ScriptTrainer.UI
         }
 
         // 设置默认文本
+        [MonoPInvokeCallback]
         private static void SetDefaultTextValues(Text lbl)
         {
             lbl.color = UIControls.s_TextColor;
@@ -68,6 +72,7 @@ namespace ScriptTrainer.UI
         }
 
         // 设置默认颜色过度值
+        [MonoPInvokeCallback]
         private static void SetDefaultColorTransitionValues(Selectable slider)
         {
             ColorBlock colors = slider.colors;
@@ -77,6 +82,7 @@ namespace ScriptTrainer.UI
         }
 
         // 设置父级对其
+        [MonoPInvokeCallback]
         private static void SetParentAndAlign(GameObject child, GameObject parent)
         {
             if (!(parent == null))
@@ -87,6 +93,7 @@ namespace ScriptTrainer.UI
         }
 
         // 递归设置层
+        [MonoPInvokeCallback]
         private static void SetLayerRecursively(GameObject go, int layer)
         {
             go.layer = layer;
@@ -98,6 +105,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建面板
+        [MonoPInvokeCallback]
         public static GameObject CreatePanel(UIControls.Resources resources)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Panel", UIControls.s_ThickElementSize);
@@ -119,6 +127,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建按钮
+        [MonoPInvokeCallback]
         public static GameObject CreateButton(UIControls.Resources resources, string Text)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Button", UIControls.s_ThickElementSize);
@@ -149,7 +158,8 @@ namespace ScriptTrainer.UI
         }
 
         // 创建文本
-        public static GameObject CreateText(UIControls.Resources resources)
+        [MonoPInvokeCallback]
+        public static GameObject CreateText()
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Text", UIControls.s_ThickElementSize);
             Text text = gameObject.AddComponent<Text>();
@@ -159,6 +169,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建图像
+        [MonoPInvokeCallback]
         public static GameObject CreateImage(UIControls.Resources resources)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Image", UIControls.s_ImageElementSize);
@@ -169,6 +180,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建原生图像
+        [MonoPInvokeCallback]
         public static GameObject CreateRawImage(UIControls.Resources resources)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("RawImage", UIControls.s_ImageElementSize);
@@ -178,6 +190,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建滑块
+        [MonoPInvokeCallback]
         public static GameObject CreateSlider(UIControls.Resources resources)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Slider", UIControls.s_ThinElementSize);
@@ -224,6 +237,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建滚动条
+        [MonoPInvokeCallback]
         public static GameObject CreateScrollbar(UIControls.Resources resources)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Scrollbar", UIControls.s_ThinElementSize);
@@ -251,6 +265,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建切换
+        [MonoPInvokeCallback]
         public static GameObject CreateToggle(UIControls.Resources resources)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Toggle", UIControls.s_ThinElementSize);
@@ -290,6 +305,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建输入框
+        [MonoPInvokeCallback]
         public static GameObject CreateInputField(UIControls.Resources resources)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("InputField", UIControls.s_ThickElementSize);
@@ -329,6 +345,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建下拉框
+        [MonoPInvokeCallback]
         public static GameObject CreateDropdown(UIControls.Resources resources, List<string> options, Color LabelColor)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Dropdown", UIControls.s_ThickElementSize);
@@ -500,6 +517,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建滚动视图
+        [MonoPInvokeCallback]
         public static GameObject CreateScrollView(UIControls.Resources resources)
         {
             GameObject gameObject = UIControls.CreateUIElementRoot("Scroll View", new Vector2(200f, 200f));
@@ -557,6 +575,7 @@ namespace ScriptTrainer.UI
         #region[创建组件]
 
         // 将 16进制格式颜色转换为Color32
+        [MonoPInvokeCallback]
         public static Color32 HTMLString2Color(string htmlcolorstring)
         {
             #region[DevNote]
@@ -569,7 +588,7 @@ namespace ScriptTrainer.UI
 
             return color;
         }
-
+        [MonoPInvokeCallback]
         public static Texture2D createDefaultTexture(string htmlcolorstring)
         {
             Color32 color = HTMLString2Color(htmlcolorstring);
@@ -583,6 +602,7 @@ namespace ScriptTrainer.UI
         }
 
         // 通过文件创建 Texture2D贴图格式
+        [MonoPInvokeCallback]
         public static Texture2D createTextureFromFile(string FilePath)
         {
             // Load a PNG or JPG file from disk to a Texture2D
@@ -594,7 +614,7 @@ namespace ScriptTrainer.UI
             {
                 FileData = File.ReadAllBytes(FilePath);
                 Tex2D = new Texture2D(265, 198);
-                Tex2D.LoadRawTextureData(FileData);
+                //Tex2D.LoadRawTextureData(FileData);
                 //Tex2D.LoadImage(FileData, false);  // This is Broke. Unhollower/Texture2D doesn't like it...
                 Tex2D.Apply();
                 return Tex2D;
@@ -603,6 +623,7 @@ namespace ScriptTrainer.UI
         }
 
         // 通过纹理贴图创建元素
+        [MonoPInvokeCallback]
         public static Sprite createSpriteFrmTexture(Texture2D SpriteTexture)
         {
             // Create a new Sprite from Texture
@@ -613,6 +634,7 @@ namespace ScriptTrainer.UI
 
 
         // 创建画布
+        [MonoPInvokeCallback]
         public static GameObject createUICanvas(float Factor = 1)
         {
             Debug.Log("创建画布");
@@ -620,16 +642,19 @@ namespace ScriptTrainer.UI
             // Create a new Canvas Object with required components
             GameObject CanvasGO = new GameObject("CanvasGO");
             Object.DontDestroyOnLoad(CanvasGO);
-
+            
             // 传入 Canvas 类型
             Canvas canvas = CanvasGO.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            //Canvas.set_renderMode_Injected(canvas.Pointer, RenderMode.ScreenSpaceOverlay);
+            Canvas.set_renderMode_Injected(canvas.m_CachedPtr, RenderMode.ScreenSpaceOverlay);
+            //Traverse.Create(canvas).Field("renderMode").SetValue(RenderMode.ScreenSpaceOverlay);
+            //canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
-            CanvasScaler cs = CanvasGO.AddComponent<CanvasScaler>();
-            cs.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-            cs.referencePixelsPerUnit = 100f;
-            cs.referenceResolution = new Vector2(1024f, 788f);
-            cs.scaleFactor = Factor;
+            //CanvasScaler cs = CanvasGO.AddComponent<CanvasScaler>();
+            //cs.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+            //cs.referencePixelsPerUnit = 100f;
+            //cs.referenceResolution = new Vector2(1024f, 788f);
+            //cs.scaleFactor = Factor;
 
             //CanvasGroup cg = CanvasGO.AddComponent<CanvasGroup>();
             //cg.alpha = 0.65f;
@@ -640,6 +665,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建UI面板
+        [MonoPInvokeCallback]
         public static GameObject createUIPanel(GameObject canvas, string height, string width, Sprite BgSprite = null)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -666,6 +692,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建按钮
+        [MonoPInvokeCallback]
         public static GameObject createUIButton(GameObject parent, string backgroundColor, string Text, UnityAction action, Vector3 localPosition = new Vector3())
         {
             Debug.Log("创建UI按钮");
@@ -689,6 +716,7 @@ namespace ScriptTrainer.UI
 
             return uiButton;
         }
+        [MonoPInvokeCallback]
         public static GameObject createUIButton(GameObject parent, string backgroundColor, string Text, Action action, Vector3 localPosition = new Vector3())
         {
             Debug.Log("创建UI按钮");
@@ -713,6 +741,7 @@ namespace ScriptTrainer.UI
             return uiButton;
         }
         // 创建切换
+        [MonoPInvokeCallback]
         public static GameObject createUIToggle(GameObject parent, Sprite BgSprite, Sprite customCheckmarkSprite)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -727,6 +756,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建滑块
+        [MonoPInvokeCallback]
         public static GameObject createUISlider(GameObject parent, Sprite BgSprite, Sprite FillSprite, Sprite KnobSprite)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -742,6 +772,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建输入框
+        [MonoPInvokeCallback]
         public static GameObject createUIInputField(GameObject parent, Sprite BgSprite, string textColor)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -760,6 +791,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建下拉菜单
+        [MonoPInvokeCallback]
         public static GameObject createUIDropDown(GameObject parent, Sprite BgSprite, Sprite ScrollbarSprite, Sprite DropDownSprite, Sprite CheckmarkSprite, Sprite customMaskSprite, List<string> options, Color LabelColor)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -777,6 +809,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建图片
+        [MonoPInvokeCallback]
         public static GameObject createUIImage(GameObject parent, Sprite BgSprite)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -790,6 +823,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建原始图片
+        [MonoPInvokeCallback]
         public static GameObject createUIRawImage(GameObject parent, Sprite BgSprite)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -803,6 +837,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建滚动条
+        [MonoPInvokeCallback]
         public static GameObject createUIScrollbar(GameObject parent, Sprite ScrollbarSprite)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -817,6 +852,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建滚动视图
+        [MonoPInvokeCallback]
         public static GameObject createUIScrollView(GameObject parent, Sprite BgSprite, Sprite customMaskSprite, Sprite customScrollbarSprite)
         {
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -835,13 +871,10 @@ namespace ScriptTrainer.UI
         }
 
         // 创建文本
-        public static GameObject createUIText(GameObject parent, Sprite BgSprite, string textColor)
+        [MonoPInvokeCallback]
+        public static GameObject createUIText(GameObject parent, string textColor)
         {
-            UIControls.Resources uiResources = new UIControls.Resources();
-            uiResources.background = BgSprite;
-
-            Debug.Log("创建文本");
-            GameObject uiText = UIControls.CreateText(uiResources);
+            GameObject uiText = UIControls.CreateText();
             uiText.transform.SetParent(parent.transform, false);
 
             //uiText.transform.GetChild(0).GetComponent<Text>().font = (Font)Resources.GetBuiltinResource<Font>("Arial.ttf"); // 设置字体

@@ -22,7 +22,7 @@ namespace ScriptTrainer.UI
         {
 
         }
-
+        [MonoPInvokeCallback]
         public static void Initialize(Navigation[] nav, GameObject panel)
         {
             navigations = nav;
@@ -37,6 +37,7 @@ namespace ScriptTrainer.UI
         }
 
         // 创建导航栏
+        [MonoPInvokeCallback]
         public static void CreateNavigation()
         {
             foreach (var item in navigations)
@@ -55,7 +56,7 @@ namespace ScriptTrainer.UI
 
             }
         }
-
+        [MonoPInvokeCallback]
         public static void SetActive(this Navigation nav)
         {
             foreach (Navigation n in navigations)

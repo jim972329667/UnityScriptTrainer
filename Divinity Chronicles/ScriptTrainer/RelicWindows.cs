@@ -172,7 +172,7 @@ namespace ScriptTrainer
             int num = 0;
             foreach (Relic item in GetItemData())
             {
-                var btn = CreateItemButton("获得", GetItemName(item), GetItemIcon(item), ItemPanel, () =>
+                var btn = CreateItemButton("获得", item, ItemPanel, () =>
                 {
                     Debug.Log(item.OriginalName);
                     SpawnEquipmentInputDialog("获得", GetItemDescription(item), () =>
@@ -239,7 +239,6 @@ namespace ScriptTrainer
             uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#37474FFF");
             //创建物品介绍
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            string DefaultColor = "#FFFFFFFF";
 
             GameObject m_tooltip = Object.Instantiate<GameObject>(m_tooltipcompanionSetInLocation);
 
@@ -293,7 +292,7 @@ namespace ScriptTrainer
             //字体颜色为白色
             closeButton.GetComponentInChildren<Text>().color = UIControls.HTMLString2Color("#FFFFFFFF");
         }
-        private static GameObject CreateItemButton(string ButtonText, string ItemName, Sprite ItemIcon, GameObject panel, UnityAction action)
+        private static GameObject CreateItemButton(string ButtonText, Relic Item, GameObject panel, UnityAction action)
         {
             //按钮宽 200 高 50
             int buttonWidth = 190;
@@ -307,19 +306,21 @@ namespace ScriptTrainer
             background.GetComponent<Image>().color = UIControls.HTMLString2Color("#455A64FF");
             background.GetComponent<RectTransform>().localPosition = new Vector3(elementX, elementY, 0);
 
+            var tip = background.AddComponent<TooltipGUI>();
+            tip.Init(GetItemDescription(Item));
 
             GameObject background_icon = UIControls.createUIPanel(background, buttonHeight.ToString(), "50", null);
             background_icon.GetComponent<Image>().color = UIControls.HTMLString2Color(qualityColor);
             background_icon.GetComponent<RectTransform>().anchoredPosition = new Vector2(70, 0);
 
-            GameObject icon = UIControls.createUIImage(background_icon, ItemIcon);
+            GameObject icon = UIControls.createUIImage(background_icon, GetItemIcon(Item));
             icon.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 60);
             icon.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
 
             //创建文字
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
             GameObject uiText = UIControls.createUIText(background, txtBgSprite, ColorUtility.ToHtmlStringRGBA(Color.white));
-            uiText.GetComponent<Text>().text = ItemName;
+            uiText.GetComponent<Text>().text = GetItemName(Item);
             uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 5, 0);
 
             //创建按钮

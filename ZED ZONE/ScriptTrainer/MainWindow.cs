@@ -11,19 +11,19 @@ using Object = UnityEngine.Object;
 using Navigation = ScriptTrainer.UI.Navigation;
 using static ClothSprite;
 using static UnityEngine.Random;
+using Il2CppSystem;
+using static Interop;
 
 namespace ScriptTrainer
 {
     public class MainWindow : MonoBehaviour
     {
-        public MainWindow(IntPtr handle) : base(handle) { }
         #region[声明]
         // Trainer Base
         public static GameObject obj = null;
-        public static MainWindow instance;
+        public static MainWindow Instance;
         public static bool initialized = false;
         public static bool _optionToggle = false;
-        public static DragAndDrog dragAndDrog = null;
 
         // UI
         public static GameObject canvas = null;
@@ -35,6 +35,7 @@ namespace ScriptTrainer
         // 按钮位置
         private static int elementX = initialX;
         private static int elementY = initialY;
+        private static float timeScale = 1f;
         private static int initialX
         {
             get
@@ -56,46 +57,38 @@ namespace ScriptTrainer
             {
                 _optionToggle = value;
 
+                if (!initialized)
+                {
+                    Instance.CreateUI();
+                }
+
                 if (_optionToggle)
                 {
-
+                    InGameController.instance?.PauseGame();
+                    Debug.Log("开启修改器！");
                 }
                 else
                 {
-                    dragAndDrog.isMouseDrag = false;
-                }
-
-                if (!initialized)
-                {
-                    instance.CreateUI();
+                    InGameController.instance?.ResumeGame();
+                    Debug.Log("关闭修改器！");
                 }
             }
         }
 
         #endregion
-
-        internal static GameObject Create(string name)
-        {
-            obj = new GameObject(name);
-            DontDestroyOnLoad(obj);
-
-            var component = new MainWindow();
-
-
-            return obj;
-        }
-
         public MainWindow()
         {
-            instance = this;
+            Instance = this;
         }
+
+        [MonoPInvokeCallback]
         public static void Initialize()
         {
             #region[初始化资源]
 
             #endregion
 
-            instance.CreateUI();
+            Instance.CreateUI();
 
             initialized = true;
         }
@@ -108,9 +101,11 @@ namespace ScriptTrainer
                 Debug.Log("创建 UI 元素");
 
                 canvas = UIControls.createUICanvas(ScriptTrainer.WindowSizeFactor.Value);
-                Object.DontDestroyOnLoad(canvas);
+                canvas.GetComponent<Canvas>().overrideSorting = true;
+                canvas.GetComponent<Canvas>().sortingOrder = Extensions.GetMaxSortingOrder();
                 // 设置背景
                 GameObject background = UIControls.createUIPanel(canvas, (height + 40).ToString(), (width + 40).ToString(), null);
+                ScriptTrainer.WriteLog(background.GetComponent<RectTransform>().sizeDelta.ToString());
                 background.GetComponent<Image>().color = UIControls.HTMLString2Color("#2D2D30FF");
 
                 // 将面板添加到画布, 请参阅 createUIPanel 了解我们将高度/宽度作为字符串传递的原因
@@ -118,9 +113,6 @@ namespace ScriptTrainer
                 // 设置背景颜色
                 uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
 
-                // 这就是我们将如何挂钩鼠标事件以进行窗口拖动
-                MainWindow.dragAndDrog = background.AddComponent<DragAndDrog>();
-                dragAndDrog.WindowSizeFactor = ScriptTrainer.WindowSizeFactor.Value;
                 #region[面板元素]
 
 
@@ -242,8 +234,9 @@ namespace ScriptTrainer
         }
 
         #region[添加组件]
-        
+
         // 添加标题
+        [MonoPInvokeCallback]
         public static GameObject AddTitle(string Title, GameObject background)
         {
             GameObject TitleBackground = UIControls.createUIPanel(background, "30", (width - 20).ToString(), null);
@@ -251,7 +244,7 @@ namespace ScriptTrainer
             TitleBackground.GetComponent<RectTransform>().localPosition = new Vector3(0, height / 2 - 30, 0);
 
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(TitleBackground, txtBgSprite, "#FFFFFFFF");
+            GameObject uiText = UIControls.createUIText(TitleBackground, "#FFFFFFFF");
             uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(width - 10, 30);
             uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
             Text text = uiText.GetComponent<Text>();
@@ -271,8 +264,6 @@ namespace ScriptTrainer
             if (y) Position.y = initialY;
         }
         #endregion
-
-
 
         #endregion
 

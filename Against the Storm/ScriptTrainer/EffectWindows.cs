@@ -1,10 +1,12 @@
-﻿using Eremite.Controller;
+﻿using Eremite.Buildings.UI;
+using Eremite.Controller;
 using Eremite.Model;
 using Eremite.Model.Effects;
 using Eremite.Model.State;
 using Eremite.Tools.Runtime;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +18,7 @@ namespace ScriptTrainer
 {
     internal class EffectWindows : MonoBehaviour
     {
+        public static EffectWindows Instance { get; private set; }
         private static GameObject Panel;
         private static int initialX;
         private static int initialY;
@@ -30,8 +33,12 @@ namespace ScriptTrainer
         private static int conunt = 15;
         private static string searchText = "";
         private static GameObject uiText;
+        public static bool Initialized = false;
 
-        
+        public static int SelectIndex = 0;
+        public static Dropdown EffectDropdown;
+
+
         private static string uiText_text
         {
             get
@@ -43,35 +50,83 @@ namespace ScriptTrainer
 
         public EffectWindows(GameObject panel, int x, int y)
         {
+            Instance = this;
             Panel = panel;
             initialX = elementX = x + 50;
             initialY = elementY = y;
-            Initialize();
+        }
+
+        public GameObject AddDropdown(string Text, int width, List<string> options, GameObject panel, UnityAction<int> action)
+        {
+            // 计算x轴偏移
+            elementX += width / 2 - 30;
+
+            // label
+            Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
+            GameObject uiText = UIControls.createUIText(panel, txtBgSprite, "#FFFFFFFF");
+            uiText.GetComponent<Text>().text = Text;
+            uiText.GetComponent<RectTransform>().localPosition = new Vector3(elementX, elementY, 0);
+            //uiText.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 30);
+            uiText.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+
+            // 坐标偏移
+            elementX += 60;
+
+            // 创建下拉框
+            Sprite dropdownBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#212121FF"));      // 背景颜色
+            Sprite dropdownScrollbarSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#8C9EFFFF"));   // 滚动条颜色 (如果有的话
+            Sprite dropdownDropDownSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#212121FF"));    // 框右侧小点的颜色
+            Sprite dropdownCheckmarkSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#8C9EFFFF"));   // 选中时的颜色
+            Sprite dropdownMaskSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#E65100FF"));        // 不知道是哪的颜色
+            Color LabelColor = UIControls.HTMLString2Color("#EFEBE9FF");
+            GameObject uiDropDown = UIControls.createUIDropDown(panel, dropdownBgSprite, dropdownScrollbarSprite, dropdownDropDownSprite, dropdownCheckmarkSprite, dropdownMaskSprite, options, LabelColor);
+            Object.DontDestroyOnLoad(uiDropDown);
+            uiDropDown.GetComponent<RectTransform>().localPosition = new Vector3(elementX, elementY, 0);
+
+            // 下拉框选中时触发方法
+            uiDropDown.GetComponent<Dropdown>().onValueChanged.AddListener(action);
+
+            elementX += width / 2 + 60;
+            return uiDropDown;
         }
         public void Initialize()
         {
             //创建搜索框
             SearchBar(Panel);
-            elementX += 300;
-            MainWindow.AddButton(ref elementX, ref elementY, "保存已添加效果", Panel, () =>
+            elementX += 240;
+            //MainWindow.AddButton(ref elementX, ref elementY, "保存已添加效果", Panel, () =>
+            //{
+            //    if (GameController.Instance != null)
+            //        Scripts.SaveEffects(ScriptPatch.AddEffects);
+            //});
+            //MainWindow.AddButton(ref elementX, ref elementY, "载入效果", Panel, () =>
+            //{
+            //    if (GameController.Instance != null)
+            //        SpawnItemNames(Scripts.LoadEffects());
+            //});
+
+            var DropDown = AddDropdown("类型", 250, ZGGameObject.EffectModels.Keys.ToList(), Panel, (int count) =>
             {
-                if (GameController.Instance != null)
-                    Scripts.SaveEffects(ScriptPatch.AddEffects);
+                if (SelectIndex != count)
+                    page = 1;
+                SelectIndex = count;
+                container(count);
             });
-            MainWindow.AddButton(ref elementX, ref elementY, "载入效果", Panel, () =>
-            {
-                if (GameController.Instance != null)
-                    SpawnItemNames(Scripts.LoadEffects());
-            });
+            EffectDropdown = DropDown.GetComponent<Dropdown>();
             elementY += 10;
+
             hr();
 
             //创建物品列表
             //elementX += 200;
-            elementY = 125 - 60 * 5;
+            
             //创建分页
+            container(SelectIndex);
 
+            elementY = 125 - 60 * 5;
             PageBar(Panel);
+
+            Initialized = true;
         }
 
         #region[创建详细]
@@ -106,7 +161,7 @@ namespace ScriptTrainer
                 //Debug.Log(text);
                 page = 1;
                 searchText = text;
-                container();
+                container(SelectIndex);
                 EffectWindows.uiText.GetComponent<Text>().text = uiText_text;
                 //Destroy(ItemPanel);
             });
@@ -140,7 +195,7 @@ namespace ScriptTrainer
 
                 page--;
                 if (page <= 0) page = 1;
-                container();
+                container(SelectIndex);
                 uiText.GetComponent<Text>().text = uiText_text;
             }, new Vector3());
             prevBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 20);
@@ -151,13 +206,13 @@ namespace ScriptTrainer
             {
                 page++;
                 if (page >= maxPage) page = maxPage;
-                container();
+                container(SelectIndex);
                 uiText.GetComponent<Text>().text = uiText_text;
             });
             nextBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 20);
             nextBtn.GetComponent<RectTransform>().localPosition = new Vector3(100, 0, 0);
         }
-        private static void container()
+        private static void container(int index = 0)
         {
             elementX = -200;
             elementY = 125;
@@ -174,7 +229,7 @@ namespace ScriptTrainer
             ItemPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(10, 0);
 
             int num = 0;
-            foreach (EffectModel item in GetItemData())
+            foreach (EffectModel item in GetItemData(index))
             {
                 var btn = CreateItemButton("获得", GetItemName(item), GetItemIcon(item), ItemPanel, () =>
                 {
@@ -308,8 +363,21 @@ namespace ScriptTrainer
             {
                 try
                 {
-                    Debug.Log(item.Name);
-                    item.Apply(EffectContextType.None);
+                    ScriptTrainer.WriteLog(item.Name);
+                    if(item is ReplaceBuildingEffectModel)
+                    {
+                        item.Apply(EffectContextType.Building, BuildingPanel.currentBuilding?.Id ?? 0);
+                        ScriptTrainer.WriteLog("ZG:建筑！");
+                    }
+                    else if(item is CloningEffectModel)
+                    {
+                        item.Apply(EffectContextType.Building, BuildingPanel.currentBuilding?.Id ?? 0);
+                        ScriptTrainer.WriteLog("ZG:复制建筑！");
+                    }
+                    else
+                    {
+                        item.Apply();
+                    }
                 }
                 catch(Exception ex)
                 {
@@ -343,7 +411,7 @@ namespace ScriptTrainer
             }
             else
             {
-                Debug.Log("ZG:没有打开游戏！");
+                ScriptTrainer.WriteLog("ZG:没有打开游戏！");
             }
 
         }
@@ -356,7 +424,6 @@ namespace ScriptTrainer
                     try
                     {
                         EffectsRuntimeTools.AddEffect(item);
-                        //Debug.Log(item);
                         ScriptPatch.AddEffects.Add(item);
                     }
                     catch(Exception ex)
@@ -367,16 +434,23 @@ namespace ScriptTrainer
             }
             else
             {
-                Debug.Log("ZG:没有打开游戏！");
+                ScriptTrainer.WriteLog("ZG:没有打开游戏！");
             }
 
         }
 
         #region[获取数据相关函数]
-        private static List<EffectModel> GetItemData()
+        private static List<EffectModel> GetItemData(int index)
         {
-            List<EffectModel> ItemData = ZGGameObject.EffectModels;
-            Debug.Log($"ZG:全物品数量:{ItemData.Count}");
+            List<EffectModel> ItemData = ZGGameObject.EffectModels[EffectDropdown.options[index].text];
+            ScriptTrainer.WriteLog($"ZG:全物品数量:{ItemData.Count}");
+            string Lines = string.Empty;
+            //foreach( var item in ItemData)
+            //{
+            //    Lines += $"{item.DisplayName};{item.GetType()};{item.Name}\n";
+            //    //ScriptTrainer.WriteLog($"ZG:物品类型:{item.GetType()};名称:{item.Name}");
+            //}
+            //File.WriteAllText("F:\\AllItems.txt", Lines);
             if (searchText != "")
             {
                 ItemData = FilterItemData(ItemData);
@@ -397,7 +471,11 @@ namespace ScriptTrainer
                 maxPage = ItemData.Count / conunt + 1;
             else
                 maxPage = ItemData.Count / conunt;
-
+            if (uiText?.GetComponent<Text>())
+            {
+                uiText.GetComponent<Text>().text = uiText_text;
+            }
+            
             return list;
         }
         //搜索过滤
@@ -423,10 +501,14 @@ namespace ScriptTrainer
         }
         private static string GetItemName(EffectModel item)
         {
+            if(item.DisplayName == ">Missing key<")
+                return item.Name;
             return item.DisplayName;
         }
         private static string GetItemDescription(EffectModel item)
         {
+            if (item.Description == ">Missing key<")
+                return item.Name;
             return item.Description;
         }
         private static Sprite GetItemIcon(EffectModel item)
@@ -434,6 +516,8 @@ namespace ScriptTrainer
             return item.GetIcon();
         }
         #endregion
+
+
     }
 
 }

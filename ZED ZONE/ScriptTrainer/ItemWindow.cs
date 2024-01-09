@@ -7,11 +7,13 @@ using UnityEngine.UI;
 using System;
 using Object = UnityEngine.Object;
 using HarmonyLib.Tools;
+using static Il2CppSystem.DateTimeParse;
 
 namespace ScriptTrainer
 {
     internal class ItemWindow : MonoBehaviour
     {
+        public static ItemWindow Instance;
         private static GameObject Panel;
         private static int initialX;
         private static int initialY;
@@ -37,6 +39,7 @@ namespace ScriptTrainer
 
         public ItemWindow(GameObject panel, int x, int y)
         {
+            Instance = this;
             Panel = panel;
             initialX = elementX = x + 50;
             initialY = elementY = y;
@@ -53,10 +56,10 @@ namespace ScriptTrainer
                 Debug.Log(text);
                 page = 1;
                 searchText = text;
+                GameObject.Destroy(ItemPanel);
                 if (TryGetData())
                     container();
                 ItemWindow.uiText.GetComponent<Text>().text = uiText_text;
-                Destroy(ItemPanel);
             });
 
 
@@ -89,11 +92,10 @@ namespace ScriptTrainer
             pageObj.GetComponent<RectTransform>().localPosition = new Vector3(0, elementY, 0);
 
             //当前页数 / 总页数
-            Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
 
             if (uiText == null)
             {
-                uiText = UIControls.createUIText(pageObj, txtBgSprite, "#ffFFFFFF");
+                uiText = UIControls.createUIText(pageObj, "#ffFFFFFF");
                 uiText.GetComponent<Text>().text = uiText_text;
                 uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
                 //设置字体
@@ -128,7 +130,7 @@ namespace ScriptTrainer
             nextBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 20);
             nextBtn.GetComponent<RectTransform>().localPosition = new Vector3(100, 0, 0);
         }
-        private static void container()
+        private void container()
         {
             elementX = -200;
             elementY = 125;
@@ -144,23 +146,29 @@ namespace ScriptTrainer
             ItemPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
             ItemPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(10, 0);
 
-            int num = 0;
-            foreach (ItemAttr item in GetItemData())
+            var ItemList = GetItemData();
+            int maxsort = MainWindow.canvas?.GetComponent<Canvas>().sortingOrder ?? Extensions.GetMaxSortingOrder();
+            maxsort++;
+            for (int i = 0;i< ItemList.Count; i++)
             {
-                var btn = CreateItemButton("获得", item, ItemPanel, () =>
+                var btn = CreateItemButton("获得", maxsort, ItemList[i], ItemPanel, () =>
                 {
-                    SpawnItem(item);
+                    SpawnItem(ItemList[i]);
                 });
-                ItemButtons.Add(btn);
-                num++;
-                if (num % 3 == 0)
+                ItemButtons.Insert(i,btn);
+                if ((i + 1) % 3 == 0)
                 {
                     hr();
                 }
             }
+            int num = 0;
+            foreach(var x in UnityEngine.GameObject.FindObjectsOfType<Canvas>())
+            {
+                Debug.Log($"Num {num++}: {x.sortingOrder}");
+            }
         }
 
-        private static GameObject CreateItemButton(string ButtonText, ItemAttr item, GameObject panel, Action action)
+        private GameObject CreateItemButton(string ButtonText,int sortorder, ItemAttr item, GameObject panel, Action action)
         {
             //按钮宽 200 高 50
             int buttonWidth = 190;
@@ -183,12 +191,12 @@ namespace ScriptTrainer
             icon.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
 
             var tip = background.AddComponent<TooltipGUI>();
-            tip.Tooltip.Add(GetItemDescription(item).GetSeparateString(25));
-            tip.WindowSizeFactor = ScriptTrainer.WindowSizeFactor.Value;
+            tip.Initialize(GetItemDescription(item), sortorder);
+            //tip.WindowSizeFactor = ScriptTrainer.WindowSizeFactor.Value;
 
             //创建文字
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(background, txtBgSprite, "#FFFFFFFF");
+            GameObject uiText = UIControls.createUIText(background, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = GetItemName(item);
             uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 5, 0);
 
@@ -202,16 +210,15 @@ namespace ScriptTrainer
 
             return background;
         }
-        
-        private static void hr()
+
+        private void hr()
         {
             elementX = initialX;
             elementY -= 60;
         }
 
         #endregion
-
-        public static ItemAttr_RangedWeapon GetRangedWeapon(ItemAttr item)
+        public  ItemAttr_RangedWeapon GetRangedWeapon(ItemAttr item)
         {
             foreach(var x in ItemManager.instance.rangedWeaponList)
             {
@@ -220,7 +227,7 @@ namespace ScriptTrainer
             }
             return null;
         }
-        public static void SpawnItem(ItemAttr item)
+        public  void SpawnItem(ItemAttr item)
         {
             GameData data = GameController.instance.gameData;
             ItemData itemData = ItemManager.instance.GetRandomDataByAttr(item,true);
@@ -269,7 +276,7 @@ namespace ScriptTrainer
 
 
         #region[获取数据相关函数]
-        private static bool TryGetData()
+        private bool TryGetData()
         {
             if (ItemManager.instance.itemList == null)
             {
@@ -277,7 +284,7 @@ namespace ScriptTrainer
             }
             return true;
         }
-        private static List<ItemAttr> GetItemData()
+        private List<ItemAttr> GetItemData()
         {
 
             List<ItemAttr> ItemData = new List<ItemAttr>();
@@ -312,7 +319,7 @@ namespace ScriptTrainer
             return list;
         }
         //搜索过滤
-        private static List<ItemAttr> FilterItemData(List<ItemAttr> dataList)
+        private List<ItemAttr> FilterItemData(List<ItemAttr> dataList)
         {
             if (searchText == "")
             {
@@ -332,15 +339,15 @@ namespace ScriptTrainer
 
             return list;
         }
-        private static string GetItemName(ItemAttr item)
+        private string GetItemName(ItemAttr item)
         {
             return item.ItemName;
         }
-        private static string GetItemDescription(ItemAttr item)
+        private string GetItemDescription(ItemAttr item)
         {
             return item.GetDescription();
         }
-        private static Sprite GetItemIcon(ItemAttr item)
+        private Sprite GetItemIcon(ItemAttr item)
         {
             return ItemManager.instance.GetItemSprite(item.itemId);
         }

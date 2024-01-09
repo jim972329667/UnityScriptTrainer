@@ -118,6 +118,7 @@
     <Compile Include="Scripts.cs" />
     <Compile Include="ScriptTrainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnityGameUI\DragAndDrog.cs" />
     <Compile Include="UnityGameUI\Extensions.cs" />
     <Compile Include="UnityGameUI\TooltipGUI.cs" />
     <Compile Include="UnityGameUI\UIControls.cs" />

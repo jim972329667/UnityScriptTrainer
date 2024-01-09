@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="ItemWindow.cs" />
     <Compile Include="MainWindow.cs" />
+    <Compile Include="MonoPInvokeCallbackAttribute.cs" />
     <Compile Include="ScriptPatch.cs" />
     <Compile Include="Scripts.cs" />
     <Compile Include="ScriptTrainer.cs" />
@@ -53,7 +54,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\BepInEx\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Assembly-CSharp, Version=2.0.0.668, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Game\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -61,17 +62,19 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\BepInEx\BepInEx.Core.dll</HintPath>
     </Reference>
-    <Reference Include="BepInEx.IL2CPP, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\BepInEx\BepInEx.IL2CPP.dll</HintPath>
+    <Reference Include="BepInEx.Unity.IL2CPP">
+      <HintPath>..\Library\BepInEx\BepInEx.Unity.IL2CPP.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInterop.Runtime">
+      <HintPath>..\Library\BepInEx\Il2CppInterop.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppmscorlib, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Game\Il2Cppmscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="UnhollowerBaseLib, Version=0.4.33.3, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UnityEngine.AssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\BepInEx\UnhollowerBaseLib.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\ZED ZONE\BepInEx\interop\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -97,6 +100,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Game\UnityEngine.UIModule.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -326,6 +326,10 @@ namespace ScriptTrainer
             ItemData.AddRange(ScriptPatch.pool.GetAllBy(null, new PrefabEntities.Type[]{
                 PrefabEntities.Type.Item}, new PrefabEntities.Type[] { PrefabEntities.Type.Unlockable, PrefabEntities.Type.Curse }, null, Pool.IncludeRemoved.Yes, true).ToList<PrefabEntity>());
 
+            ItemData.AddRange(ScriptPatch.pool.GetAllBy(null, new PrefabEntities.Type[]{
+                PrefabEntities.Type.Cannon}, null, null, Pool.IncludeRemoved.Yes, true).ToList<PrefabEntity>());
+
+
 
             Debug.Log($"ZG:全物品数量:{ItemData.Count}");
             if (searchText != "")

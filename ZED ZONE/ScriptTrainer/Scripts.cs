@@ -9,6 +9,7 @@ namespace ScriptTrainer
 {
     public class Scripts
     {
+        [MonoPInvokeCallback]
         public static void AddSkillPoint(int point)
         {
             if (NewGameSubMonitorPanel_NewCharacter.m_instance != null)
@@ -22,6 +23,7 @@ namespace ScriptTrainer
                 data.playerData.characterSkillPoint += point;
             }
         }
+        [MonoPInvokeCallback]
         public static void AddPerkPoint(int point)
         {
             if (NewGameSubMonitorPanel_NewCharacter.m_instance != null)
@@ -35,6 +37,7 @@ namespace ScriptTrainer
                 data.playerData.characterPerkPoint += point;
             }
         }
+        [MonoPInvokeCallback]
         public static void AddAttrPoint(int point)
         {
             if (NewGameSubMonitorPanel_NewCharacter.m_instance != null)
@@ -48,6 +51,7 @@ namespace ScriptTrainer
                 data.playerData.characterAttrPoint += point;
             }
         }
+        [MonoPInvokeCallback]
         public static void MaxBackpackSize(bool state)
         {
             if (state)
@@ -62,6 +66,7 @@ namespace ScriptTrainer
                 ScriptPatch.UnChangeBackpackSize = false;
             }
         }
+        [MonoPInvokeCallback]
         public static void ZeroBackpackWeight(bool state)
         {
             if (state)
@@ -76,6 +81,7 @@ namespace ScriptTrainer
                 ScriptPatch.UnChangeBackpackWeight = false;
             }
         }
+        [MonoPInvokeCallback]
         public static Vector2Int GetBackpackSize()
         {
             string[] lines = ScriptTrainer.BackpackSize.Value.Replace("(", "").Replace(")", "").Replace(" ", "").Split(',');
@@ -96,6 +102,7 @@ namespace ScriptTrainer
                 return new Vector2Int(26, 41);
             }
         }
+        [MonoPInvokeCallback]
         public static void AddCar()
         {
             var car = GameController.instance.GetRandomVehicleData();
@@ -140,6 +147,7 @@ namespace ScriptTrainer
             InGameController.instance.AddVehicle(car, GameController.instance.playerCharacter.currentChunk).fuelTankData.fuel = car.vehicleFuelTankSize;
 
         }
+        [MonoPInvokeCallback]
         public static void Cure()
         {
             CharacterData data = GameController.instance.gameData.playerData;

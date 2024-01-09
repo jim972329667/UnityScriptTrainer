@@ -9,6 +9,7 @@ namespace ScriptTrainer.UI
 {
     internal class UIWindows
     {
+        [MonoPInvokeCallback]
         public static void MessageDialog(string prompt)
         {
             GameObject canvas = UIControls.createUICanvas();    // 创建画布
@@ -21,8 +22,8 @@ namespace ScriptTrainer.UI
             uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#37474FFF"); // 设置背景颜色
 
             // 创建标题
-            Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(uiPanel, txtBgSprite, "#FFFFFFFF");
+
+            GameObject uiText = UIControls.createUIText(uiPanel, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = prompt;
             uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 10, 0);
 
@@ -44,20 +45,21 @@ namespace ScriptTrainer.UI
             // 字体颜色为白色
             closeButton.GetComponentInChildren<Text>().color = UIControls.HTMLString2Color("#FFFFFFFF");
         }
+        [MonoPInvokeCallback]
         public static void SpawnInputDialog(string prompt, string title, string defaultText, Action<string> onFinish)
         {
             GameObject canvas = UIControls.createUICanvas();    // 创建画布
             Object.DontDestroyOnLoad(canvas);
             // 设置置顶显示
             canvas.GetComponent<Canvas>().overrideSorting = true;
-            canvas.GetComponent<Canvas>().sortingOrder = 1;
+            canvas.GetComponent<Canvas>().sortingOrder = 10002;
 
             GameObject uiPanel = UIControls.createUIPanel(canvas, "70", "300", null);  // 创建面板
             uiPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#37474FFF"); // 设置背景颜色
 
             // 创建标题
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(uiPanel, txtBgSprite, "#FFFFFFFF");
+            GameObject uiText = UIControls.createUIText(uiPanel, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = prompt;
             uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 10, 0);
 
@@ -86,6 +88,7 @@ namespace ScriptTrainer.UI
         }
 
         // 带下拉框的对话框
+        [MonoPInvokeCallback]
         public static void SpawnDropdownDialog(string prompt, string title, List<string> options, Action<int> onFinish)
         {
             GameObject canvas = UIControls.createUICanvas();    // 创建画布
@@ -101,7 +104,7 @@ namespace ScriptTrainer.UI
 
             // 创建标题
             Sprite txtBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#7AB900FF"));
-            GameObject uiText = UIControls.createUIText(uiPanel, txtBgSprite, "#FFFFFFFF");
+            GameObject uiText = UIControls.createUIText(uiPanel, "#FFFFFFFF");
             uiText.GetComponent<Text>().text = prompt;
             uiText.GetComponent<RectTransform>().localPosition = new Vector3(0, 10, 0);
 
