@@ -15,7 +15,7 @@ using BepInEx.Logging;
 
 namespace ScriptTrainer
 {
-    [BepInPlugin("ScriptTrainer.Jim97.For_The_King_II", "为了吾王 内置修改器", "1.0.2")]
+    [BepInPlugin("ScriptTrainer.Jim97.For_The_King_II", "为了吾王 内置修改器", "1.0.4")]
     public class ScriptTrainer: BaseUnityPlugin
     {
         public static ScriptTrainer Instance;

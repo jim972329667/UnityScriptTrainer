@@ -3,7 +3,9 @@ using BepInEx.Configuration;
 using Eremite;
 using Eremite.Controller;
 using Eremite.Model;
+using Eremite.Model.Effects;
 using Eremite.Model.State;
+using Eremite.View.Cameras;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,7 @@ using UnityEngine.InputSystem;
 
 namespace ScriptTrainer
 {
-    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "Against the Storm 内置修改器", "1.0.4")]
+    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "Against the Storm 内置修改器", "1.0.5")]
     public class ScriptTrainer: BaseUnityPlugin
     {
         // 窗口相关
@@ -121,6 +123,15 @@ namespace ScriptTrainer
                     var tmp = MainController.Instance.Settings.effects.ToList<EffectModel>();
                     foreach (EffectModel model in tmp)
                     {
+                        if (!EffectModels.ContainsKey("全部"))
+                        {
+                            EffectModels.Add("全部", new List<EffectModel> { model });
+                        }
+                        else
+                        {
+                            EffectModels["全部"].Add(model);
+                        }
+
                         if (model.IsPerk)
                         {
                             if (!EffectModels.ContainsKey("技能"))
@@ -134,15 +145,6 @@ namespace ScriptTrainer
                         }
                         if (model.IsPositive)
                         {
-                            var tmp1 = model.GetType().ToString().Split('.').Last();
-                            if (!EffectModels.ContainsKey(tmp1))
-                            {
-                                EffectModels.Add(tmp1, new List<EffectModel> { model });
-                            }
-                            else
-                            {
-                                EffectModels[tmp1].Add(model);
-                            }
                             if (!EffectModels.ContainsKey("正面的"))
                             {
                                 EffectModels.Add("正面的", new List<EffectModel> { model });
@@ -150,6 +152,18 @@ namespace ScriptTrainer
                             else
                             {
                                 EffectModels["正面的"].Add(model);
+                            }
+                        }
+
+                        if(!model.IsPerk && !model.IsPositive && !(model is ReplaceBuildingEffectModel) && !(model is CloningEffectModel))
+                        {
+                            if (!EffectModels.ContainsKey("其他"))
+                            {
+                                EffectModels.Add("其他", new List<EffectModel> { model });
+                            }
+                            else
+                            {
+                                EffectModels["其他"].Add(model);
                             }
                         }
                     }
@@ -168,6 +182,11 @@ namespace ScriptTrainer
             if (EffectModels.Count > 0 && GoodModels.Count > 0 && !EffectWindows.Initialized)
             {
                 EffectWindows.Instance.Initialize();
+            }
+            if (GameController.Instance != null && GameController.Instance.CameraController)
+            {
+                //Traverse.Create(GameController.Instance.CameraController).Field("zoomSeed").SetValue(400f);
+                GameController.Instance.CameraController.ZoomLimit = new Vector2(-100f, -8f);
             }
             if (GetKeyDown(ScriptTrainer.ShowTrainer.Value))
             {

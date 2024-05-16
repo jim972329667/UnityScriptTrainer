@@ -67,7 +67,7 @@ namespace ScriptTrainer.UI
                 //    }
                 //}
 
-                if(RectTransformUtility.RectangleContainsScreenPoint(base.gameObject.GetComponent<RectTransform>(), Input.mousePosition))
+                if(RectTransformUtility.RectangleContainsScreenPoint(base.gameObject.GetComponent<RectTransform>(), Input.mousePosition) && MainWindow._optionToggle)
                 {
                     var x = background.GetComponent<RectTransform>().sizeDelta;
                     background.transform.position = mousepos + new Vector3(x.x/2, -x.y/2, 0) + new Vector3(10,0,0);

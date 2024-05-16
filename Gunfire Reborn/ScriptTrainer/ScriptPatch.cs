@@ -8,6 +8,14 @@ using UnityEngine.UI;
 using static UnityEngine.Random;
 using SteamHome;
 using SteamMatchTogether;
+using SkillBolt;
+using static System.Collections.Specialized.BitVector32;
+using System;
+using UIScript;
+using Talent;
+using AI.BehaviorTree;
+using System.Security.Cryptography;
+using Relic;
 
 namespace ScriptTrainer
 {
@@ -15,8 +23,13 @@ namespace ScriptTrainer
     {
         #region[全局参数]
         public static int test = -1;
-        #endregion
+        public static bool SetMaxChoose = false;
 
+
+
+
+
+        #endregion
         #region 前补丁
         /// <summary>
         /// Prefix 前补丁，在补丁的函数前执行
@@ -34,7 +47,6 @@ namespace ScriptTrainer
         ///}
         /// </summary>
         #endregion
-
         #region 后补丁
         /// <summary>
         ///Postfix后补丁，在函数执行后执行
@@ -49,23 +61,19 @@ namespace ScriptTrainer
         ///}
         /// </summary>
         #endregion
-
         #region 多个同名函数补丁制作
         //[HarmonyPatch(typeof(HexMapManager), "GenerateNewMap", new Type[] { typeof(Sector) })]
         //在HexMapManager类里有多个名为GenerateNewMap的函数时，HarmonyPatch的第三个参数是函数输入变量的类型，第四个参数是函数out输出变量的类型
         #endregion
-
         #region 可读写属性补丁制作
         //[HarmonyPatch(typeof(MinigameChest), "Price", MethodType.Getter)]
         //[HarmonyPatch(typeof(MinigameChest), "Price", MethodType.Setter)]
         #endregion
-
         #region 成员修改
         //Traverse.Create(__instance).Field("initialNumberOfUses").GetValue<T>();
         //Traverse.Create(__instance).Field("initialNumberOfUses").SetValue(99);
         //initialNumberOfUses 是成员名称， T为该成员类型
         #endregion
-
         #region[多函数用同个补丁]
         //[HarmonyPatch]
         //public class FiringPatch
@@ -116,24 +124,23 @@ namespace ScriptTrainer
         //    }
         //}
 
-        [HarmonyPatch(typeof(SteamMatchAuthManager), "DlcStatUpdated")]
-        public class SteamMatchAuthManagerOverridePatch_DlcStatUpdated
-        {
-            [HarmonyPostfix]
-            public static void Postfix(string reason)
-            {
-                ScriptTrainer.WriteLog($"reason:{reason}");
-            }
-        }
-        [HarmonyPatch(typeof(NewPlayerManager), "AddPlayer")]
-        public class DlcManagerOverridePatch_DlcOwnershipChanged
-        {
-            [HarmonyPostfix]
-            public static void Postfix(int pid, NewPlayerObject pobj)
-            {
-                ScriptTrainer.WriteLog($"pid:{pid}");
-                test = pid;
-            }
-        }
+
+
+        //[HarmonyPatch(typeof(PlayerProp), "WarGSCash", MethodType.Getter)]
+        //[HarmonyPatch(typeof(PlayerProp), "WarCash", MethodType.Getter)]
+        //public class PlayerPropOverridePatch_WarGSCash
+        //{
+        //    [HarmonyPrefix]
+        //    public static bool Prefix(ref int __result)
+        //    {
+        //        __result = 999999;
+        //        return false;
+        //    }
+        //}
+
+
+
+
+
     }
 }

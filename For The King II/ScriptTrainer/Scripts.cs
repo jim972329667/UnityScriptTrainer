@@ -6,7 +6,6 @@ using System.Linq;
 using System.Collections;
 using HarmonyLib;
 using System.IO;
-using Photon.Realtime;
 using static UnityEngine.EventSystems.EventTrigger;
 
 

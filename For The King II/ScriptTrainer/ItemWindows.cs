@@ -1,11 +1,12 @@
 ﻿using BepInEx;
+using GridEditor;
 using HarmonyLib;
-using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -249,7 +250,7 @@ namespace ScriptTrainer
 
                 var btn = CreateItemButton("获得", item, line, () =>
                 {
-                    UIWindows.SpawnInputDialog(GetItemDescription(item), "获得", "1" , (string amount) =>
+                    UIWindows.SpawnInputDialog("获得", GetItemDescription(item), "1" , (string amount) =>
                     {
                         SpawnItem(item, amount.ConvertToIntDef(1));
                     });
@@ -460,12 +461,36 @@ namespace ScriptTrainer
                 List<Thing> things = player.Get<CharacterComponent>().Things;
                 if (!IsCharacterStat(item))
                 {
-                    if (Configs.Things[item].Tags.Contains("ARMOR") || Configs.Things[item].Tags.Contains("WEAPON"))
+                    if(Configs.Things.TryGetValue(item, out ThingConfig thingConfig))
                     {
-                        InventoryHelper.GiveByName(item, amount, things, null, (int)Configs.Things[item].MinTier, (int)Configs.Things[item].MaxTier, new GameRandom());
+                        try
+                        {
+                            if (thingConfig.Tags.Contains("ARMOR") || thingConfig.Tags.Contains("WEAPON"))
+                            {
+                                InventoryHelper.GiveByName(item, amount, things, null, (int)thingConfig.MinTier, (int)thingConfig.MaxTier, new GameRandom());
+                            }
+                            else if(item == "CHAOS_REDUCE_01")
+                            {
+                                AdventureHelper.RemoveNextChaosEvent(RouterMono.GetEnv().GameRun);
+                            }
+                            else if(item == "LIFE_POOL_UP_01")
+                            {
+                                RouterMono.GetEnv().GameRun.CurrentLifePool++;
+                                GlobalHeaderViewHelper.ShowLifePool();
+                            }
+                            else
+                                InventoryHelper.GiveByName(item, amount, things, null, 0, 0, null);
+                            ScriptTrainer.Instance.Log($"成功添加{amount}个物品 : {item}");
+                        }
+                        catch (Exception e)
+                        {
+                            ScriptTrainer.Instance.Log(e.Message, LogType.Error);
+                        }
                     }
                     else
-                        InventoryHelper.GiveByName(item, amount, things, null, 0, 0, null);
+                    {
+                        ScriptTrainer.Instance.Log($"Configs.Things不存在Key : {item}");
+                    }
                 }
                 else
                 {
@@ -476,9 +501,10 @@ namespace ScriptTrainer
                         else if (result == eCharacterStats.XP)
                             ProgressionHelper.PlayerGainXP(player, amount, true, new List<ValueTuple<eAbilityResults, object>>());
                         else
-                            CharacterHelper.AppendStat(player, result, amount);
+                            CharacterHelper.AppendStat(player, result.ToString(), amount);
                     }
                 }
+                RefreshUI();
             }
         }
         public static bool IsCharacterStat(string item)
@@ -491,6 +517,22 @@ namespace ScriptTrainer
             return false;
         }
 
+        public static void RefreshUI()
+        {
+            try
+            {
+                RouterMono _router = (RouterMono)typeof(RouterHelper).GetField("_router", BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null);
+                if (_router == null)
+                    return;
+                AdventureDirector _adventureDirector = (AdventureDirector)typeof(RouterMono).GetField("_adventureDirector", BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(_router);
+
+                _adventureDirector.GetType().GetMethod("_doRefreshUIAll", BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Invoke(_adventureDirector, null);
+            }
+            catch(Exception e)
+            {
+                ScriptTrainer.Instance.Log($"刷新UI错误 : {e.Message}");
+            }
+        }
         #region[获取数据相关函数]
         private static bool TryGetData()
         {

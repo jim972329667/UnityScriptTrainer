@@ -220,8 +220,18 @@ namespace ScriptTrainer
         #endregion
 
         #region Boss数据
-        
 
+        [HarmonyPatch(typeof(DLCsExtensions), "Own")]
+        public class DLCsExtensionsOverridePatch_Own
+        {
+            [HarmonyPostfix]
+            public static void Postfix(ref bool __result, DLCs self)
+            {
+                __result = true;
+                Debug.Log($"DLC:{self}");
+            }
+
+        }
         #endregion
 
         //[HarmonyPatch(typeof(GameState), "IncrementEnemyKillCount")]

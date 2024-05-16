@@ -93,7 +93,7 @@ namespace ZGScriptTrainer.UI.Panels
         public void SearchItem(string text)
         {
             ZGItems.Clear();
-            ZGItems.AddRange(text.FilterItemData());
+            ZGItems.AddRange(text.FilterItemData(ItemTypeDropdown.value));
             ScrollPool.Refresh(true, true);
         }
         public void ChangeItemCount(string text)
@@ -112,23 +112,23 @@ namespace ZGScriptTrainer.UI.Panels
         protected override void ConstructPanelContent()
         {
             //// Save button
-            //GameObject Row1 = UIFactory.CreateHorizontalGroup(this.ContentRoot, "Row1", false, false, true, true, 5, default,
-            //    new Color(0.065f, 0.065f, 0.065f), TextAnchor.MiddleLeft);
-            //UIFactory.SetLayoutElement(Row1, minHeight: 40, flexibleWidth: 9999);
+            GameObject Row1 = UIFactory.CreateHorizontalGroup(this.ContentRoot, "Row1", false, false, true, true, 5, default,
+                new Color(0.065f, 0.065f, 0.065f), TextAnchor.MiddleLeft);
+            UIFactory.SetLayoutElement(Row1, minHeight: 40, flexibleWidth: 9999);
 
-            //var lable1 = UIFactory.CreateLabel(Row1, "Lable", "类别:", fontSize: ZGScriptTrainer.FontSize.Value);
+            var lable1 = UIFactory.CreateLabel(Row1, "Lable", "类别:", fontSize: ZGScriptTrainer.FontSize.Value);
             //ZGUIUtility.SetLayoutElement(lable1, minHeight: 40, flexibleWidth: 0);
             //try
             //{
-            //    GameObject gameObject2 = UIFactory.CreateDropdown(Row1, "ItemTypeDropdown", out ItemTypeDropdown, "选择物品类型", ZGScriptTrainer.FontSize.Value, ItemTypeDropdownValueChange, null);
-            //    for (int i = 0; i < ZGItemUtil.ItemTypeDic.Count; i++)
-            //    {
-            //        ItemTypeDropdown.options.Add(new Dropdown.OptionData(ZGItemUtil.ItemTypeDic[i]));
-            //    }
+            GameObject gameObject2 = UIFactory.CreateDropdown(Row1, "ItemTypeDropdown", out ItemTypeDropdown, "选择物品类型", ZGScriptTrainer.FontSize.Value, ItemTypeDropdownValueChange, null);
+            for (int i = 0; i < ZGItemUtil.ItemTypeDic.Count; i++)
+            {
+                ItemTypeDropdown.options.Add(new Dropdown.OptionData(ZGItemUtil.ItemTypeDic[i]));
+            }
 
-            //    //GameObject gameObject2 = Row1.AddDropdown("选择物品类型", ZGItemUtil.ItemTypeDic, ItemTypeDropdownValueChange);
-            //    UIFactory.SetLayoutElement(gameObject2, minHeight: 40, minWidth: 180);
-            //    ItemTypeDropdown.captionText.fontSize = ZGScriptTrainer.FontSize.Value;
+            //GameObject gameObject2 = Row1.AddDropdown("选择物品类型", ZGItemUtil.ItemTypeDic, ItemTypeDropdownValueChange);
+            UIFactory.SetLayoutElement(gameObject2, minHeight: 40, minWidth: 180);
+            ItemTypeDropdown.captionText.fontSize = ZGScriptTrainer.FontSize.Value;
             //}
             //catch (Exception ex)
             //{

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -70,7 +71,7 @@ namespace ScriptTrainer
             uiText.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
 
             // 坐标偏移
-            elementX += 60;
+            elementX += 40;
 
             // 创建下拉框
             Sprite dropdownBgSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#212121FF"));      // 背景颜色
@@ -93,18 +94,18 @@ namespace ScriptTrainer
         {
             //创建搜索框
             SearchBar(Panel);
-            elementX += 240;
-            //MainWindow.AddButton(ref elementX, ref elementY, "保存已添加效果", Panel, () =>
-            //{
-            //    if (GameController.Instance != null)
-            //        Scripts.SaveEffects(ScriptPatch.AddEffects);
-            //});
-            //MainWindow.AddButton(ref elementX, ref elementY, "载入效果", Panel, () =>
-            //{
-            //    if (GameController.Instance != null)
-            //        SpawnItemNames(Scripts.LoadEffects());
-            //});
-
+            elementX += 200;
+            MainWindow.AddButton(ref elementX, ref elementY, "保存效果", Panel, () =>
+            {
+                if (GameController.Instance != null)
+                    Scripts.SaveEffects(ScriptPatch.AddEffects);
+            });
+            MainWindow.AddButton(ref elementX, ref elementY, "载入效果", Panel, () =>
+            {
+                if (GameController.Instance != null)
+                    SpawnItemNames(Scripts.LoadEffects());
+            });
+            elementX -= 60;
             var DropDown = AddDropdown("类型", 250, ZGGameObject.EffectModels.Keys.ToList(), Panel, (int count) =>
             {
                 if (SelectIndex != count)
@@ -144,10 +145,10 @@ namespace ScriptTrainer
             uiText.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
 
             //坐标偏移
-            elementX += 60;
+            elementX += -20;
 
             //输入框
-            int w = 260;
+            int w = 150;
             Sprite inputFieldSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#212121FF"));
             GameObject uiInputField = UIControls.createUIInputField(panel, inputFieldSprite, "#FFFFFFFF");
             uiInputField.GetComponent<InputField>().text = searchText;
@@ -364,49 +365,12 @@ namespace ScriptTrainer
                 try
                 {
                     ScriptTrainer.WriteLog(item.Name);
-                    if(item is ReplaceBuildingEffectModel)
-                    {
-                        item.Apply(EffectContextType.Building, BuildingPanel.currentBuilding?.Id ?? 0);
-                        ScriptTrainer.WriteLog("ZG:建筑！");
-                    }
-                    else if(item is CloningEffectModel)
-                    {
-                        item.Apply(EffectContextType.Building, BuildingPanel.currentBuilding?.Id ?? 0);
-                        ScriptTrainer.WriteLog("ZG:复制建筑！");
-                    }
-                    else
-                    {
-                        item.Apply();
-                    }
+                    item.Apply(EffectContextType.None, null, 0);
                 }
                 catch(Exception ex)
                 {
-                    //try
-                    //{
-                    //    item.Apply(EffectContextType.Building, 0);
-                    //}
-                    //catch (Exception ex1)
-                    //{
-                    //    try
-                    //    {
-                    //        item.Apply(EffectContextType.Deposit, 0);
-                    //    }
-                    //    catch (Exception ex3)
-                    //    {
-                    //        try
-                    //        {
-                    //            item.Apply(EffectContextType.Villager, 0);
-                    //        }
-                    //        catch (Exception ex4)
-                    //        {
-
-                    //            Debug.LogException(ex4);
-                    //        }
-                    //        Debug.LogException(ex3);
-                    //    }
-                    //    Debug.LogException(ex1);
-                    //}
-                    Debug.LogException(ex);
+                    ScriptTrainer.WriteLog($"添加物品 {item.Name} 错误：{ex.Message}");
+                    //Debug.LogException(ex);
                 }
             }
             else

@@ -17,6 +17,7 @@ namespace ZGScriptTrainer
         public static IPrefabFactory factory = null;
         public static PrefabEntities.Pool pool = null;
         public static Transform player = null;
+        public static DebugMenu debugMenu = null;
         #endregion
 
         #region 价格显示，以及价格
@@ -92,6 +93,16 @@ namespace ZGScriptTrainer
                 Debug.Log($"ZG:获取物品池:{pool}");
             }
         }
+        [HarmonyPatch(typeof(DebugMenu), "Awake")]
+        public class DebugMenuOverridePatch_Awake
+        {
+            [HarmonyPostfix]
+            public static void Postfix(DebugMenu __instance)
+            {
+                debugMenu = __instance;
+                Debug.Log($"ZG:获取debugMenu:{debugMenu}");
+            }
+        }
         [HarmonyPatch(typeof(PlayersCenterPoint), "Update")]
         public class PlayersCenterPointOverridePatch_Update
         {
@@ -102,6 +113,24 @@ namespace ZGScriptTrainer
             }
         }
         #endregion
-
+        [HarmonyPatch(typeof(DLCsExtensions), "Own")]
+        public class DLCsExtensionsOverridePatch_Own
+        {
+            [HarmonyPostfix]
+            public static void Postfix(ref bool __result, DLCs self, DLCs dlcs)
+            {
+                __result = true;
+                ZGScriptTrainer.WriteLog($"DLC : {self} {dlcs}");
+            }
+        }
+        [HarmonyPatch(typeof(HexMapManager), "Awake")]
+        public class HexMapManagerOverridePatch_Awake
+        {
+            [HarmonyPostfix]
+            public static void Postfix(HexMapManager __instance)
+            {
+                __instance.initialStormDelay = 10;
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ using UnityEngine;
 using Zenject;
 using Zenject.Extensions;
 using ZGScriptTrainer.UI;
+using static UnityEngine.Localization.Metadata.SharedTableCollectionMetadata;
 
 namespace ZGScriptTrainer.ItemSpwan
 {
@@ -22,9 +23,12 @@ namespace ZGScriptTrainer.ItemSpwan
         //物品种类
         public static readonly List<string> ItemTypeDic = new List<string>()
         {
-            "遗物",
-            "药剂",
-            "法术"
+            "全部",
+            "资源",
+            "饰品",
+            "弹药",
+            "造物",
+            "舰炮"
         };
         //判断是否可以获取所有物品
         public static bool CanGetItemData()
@@ -36,19 +40,35 @@ namespace ZGScriptTrainer.ItemSpwan
         {
             var ItemData = ScriptPatch.pool.GetAllBy(includeLocked: Pool.IncludeLocked.Yes,includeRemoved: Pool.IncludeRemoved.Yes).ToList();
 
-            BaseItems.Clear();
-            var items = new List<ZGItem>();
+            ClearBaseItem();
+
+            //foreach(var xx in ScriptPatch.pool.prefabEntities.Values)
+            //{
+            //    var ZGItem = new ZGItem
+            //    {
+            //        Prefab = xx
+            //    };
+            //    List<string> x = new List<string>();
+            //    foreach (var type in xx.Types)
+            //    {
+            //        x.Add(type.ToString());
+            //    }
+            //    ZGScriptTrainer.WriteLog($"{ZGItem.GetItemName()} : {string.Join(";", x)}");
+            //}
+
             foreach (var item in ItemData)
             {
                 var ZGItem = new ZGItem
                 {
                     Prefab = item
                 };
+                
                 if (item.Types.Contains(PrefabEntities.Type.Resource))
                 {
                     if (!item.Types.Contains(PrefabEntities.Type.Unlockable))
                     {
-                        items.Add(ZGItem);
+                        BaseItems[0].Add(ZGItem);
+                        BaseItems[1].Add(ZGItem);
                     }
                 }
 
@@ -56,16 +76,29 @@ namespace ZGScriptTrainer.ItemSpwan
                 {
                     if (!item.Types.Contains(PrefabEntities.Type.Unlockable) && !item.Types.Contains(PrefabEntities.Type.Curse))
                     {
-                        items.Add(ZGItem);
+                        BaseItems[0].Add(ZGItem);
+                        if(item.Types.Contains(PrefabEntities.Type.Trinket))
+                            BaseItems[2].Add(ZGItem);
+                        else if(item.Types.Contains(PrefabEntities.Type.Artifact))
+                            BaseItems[4].Add(ZGItem);
+                        else
+                            BaseItems[3].Add(ZGItem);
                     }
                 }
                 if (item.Types.Contains(PrefabEntities.Type.Cannon))
                 {
-                    items.Add(ZGItem);
+                    BaseItems[0].Add(ZGItem);
+                    BaseItems[5].Add(ZGItem);
                 }
             }
-            BaseItems[0] = items;
-            ZGScriptTrainer.WriteLog($"成功获取物品{items.Count}");
+        }
+        public static void ClearBaseItem()
+        {
+            BaseItems.Clear();
+            for (var i = 0; i < ItemTypeDic.Count; i++)
+            {
+                BaseItems[i] = new List<ZGItem>();
+            }
         }
         //获取物品名称
         public static string GetItemName(this ZGItem item)

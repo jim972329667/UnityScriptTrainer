@@ -615,7 +615,7 @@ namespace ScriptTrainer.UI
         // 创建画布
         public static GameObject createUICanvas(float Factor = 1)
         {
-            Debug.Log("创建画布");
+            //Debug.Log("创建画布");
 
             // Create a new Canvas Object with required components
             GameObject CanvasGO = new GameObject("CanvasGO");
@@ -647,7 +647,7 @@ namespace ScriptTrainer.UI
             uiResources.background = BgSprite;
 
             //log.LogMessage("   Creating UI Panel");
-            Debug.Log("创建UI面板");
+            //Debug.Log("创建UI面板");
             GameObject uiPanel = UIControls.CreatePanel(uiResources);
             uiPanel.transform.SetParent(canvas.transform, false);
 
@@ -668,7 +668,7 @@ namespace ScriptTrainer.UI
         // 创建按钮
         public static GameObject createUIButton(GameObject parent, string backgroundColor, string Text, UnityAction action, Vector3 localPosition = new Vector3())
         {
-            Debug.Log("创建UI按钮");
+            //Debug.Log("创建UI按钮");
 
             Sprite btnSprite = createSpriteFrmTexture(createDefaultTexture(backgroundColor));
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -691,7 +691,7 @@ namespace ScriptTrainer.UI
         }
         public static GameObject createUIButton(GameObject parent, string backgroundColor, string Text, Action action, Vector3 localPosition = new Vector3())
         {
-            Debug.Log("创建UI按钮");
+            //Debug.Log("创建UI按钮");
 
             Sprite btnSprite = createSpriteFrmTexture(createDefaultTexture(backgroundColor));
             UIControls.Resources uiResources = new UIControls.Resources();
@@ -719,7 +719,7 @@ namespace ScriptTrainer.UI
             uiResources.standard = BgSprite;
             uiResources.checkmark = customCheckmarkSprite;
 
-            Debug.Log("创建UI切换");
+            //Debug.Log("创建UI切换");
             GameObject uiToggle = UIControls.CreateToggle(uiResources);
             uiToggle.transform.SetParent(parent.transform, false);
 
@@ -734,7 +734,7 @@ namespace ScriptTrainer.UI
             uiResources.standard = FillSprite;
             uiResources.knob = KnobSprite;
 
-            Debug.Log("创建滑块");
+            //Debug.Log("创建滑块");
             GameObject uiSlider = UIControls.CreateSlider(uiResources);
             uiSlider.transform.SetParent(parent.transform, false);
 
@@ -747,7 +747,7 @@ namespace ScriptTrainer.UI
             UIControls.Resources uiResources = new UIControls.Resources();
             uiResources.inputField = BgSprite;
 
-            Debug.Log("创建UI输入框");
+            //Debug.Log("创建UI输入框");
             GameObject uiInputField = UIControls.CreateInputField(uiResources);
             uiInputField.transform.SetParent(parent.transform, false);
 
@@ -769,7 +769,7 @@ namespace ScriptTrainer.UI
             uiResources.checkmark = CheckmarkSprite;    // 设置复选标记图像
             uiResources.mask = customMaskSprite;     // 设置视口蒙版
 
-            Debug.Log("创建 UI 下拉菜单");
+            //Debug.Log("创建 UI 下拉菜单");
             var uiDropdown = UIControls.CreateDropdown(uiResources, options, LabelColor);
             uiDropdown.transform.SetParent(parent.transform, false);
 
@@ -782,7 +782,7 @@ namespace ScriptTrainer.UI
             UIControls.Resources uiResources = new UIControls.Resources();
             uiResources.background = BgSprite;
 
-            Debug.Log("创建图片");
+            //Debug.Log("创建图片");
             GameObject uiImage = UIControls.CreateImage(uiResources);
             uiImage.transform.SetParent(parent.transform, false);
 
@@ -795,7 +795,7 @@ namespace ScriptTrainer.UI
             UIControls.Resources uiResources = new UIControls.Resources();
             uiResources.background = BgSprite;
 
-            Debug.Log("创建原始图片");
+            //Debug.Log("创建原始图片");
             GameObject uiRawImage = UIControls.CreateRawImage(uiResources);
             uiRawImage.transform.SetParent(parent.transform, false);
 
@@ -809,7 +809,7 @@ namespace ScriptTrainer.UI
             uiResources.background = ScrollbarSprite;
 
             //log.LogMessage("   Creating UI Scrollbar");
-            Debug.Log("创建滚动条");
+            //Debug.Log("创建滚动条");
             GameObject uiScrollbar = UIControls.CreateScrollbar(uiResources);
             uiScrollbar.transform.SetParent(parent.transform, false);
 
@@ -827,7 +827,7 @@ namespace ScriptTrainer.UI
             uiResources.mask = customMaskSprite;
 
             //log.LogMessage("   Creating UI ScrollView");
-            Debug.Log("创建滚动视图");
+            //Debug.Log("创建滚动视图");
             GameObject uiScrollView = UIControls.CreateScrollView(uiResources);
             uiScrollView.transform.SetParent(parent.transform, false);
 
@@ -840,7 +840,7 @@ namespace ScriptTrainer.UI
             UIControls.Resources uiResources = new UIControls.Resources();
             uiResources.background = BgSprite;
 
-            Debug.Log("创建文本");
+            //Debug.Log("创建文本");
             GameObject uiText = UIControls.CreateText(uiResources);
             uiText.transform.SetParent(parent.transform, false);
 

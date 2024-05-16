@@ -68,10 +68,7 @@
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\Library\Game\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Gunfire Reborn\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Core, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -83,7 +80,7 @@
     </Reference>
     <Reference Include="Il2Cppmscorlib, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>E:\program files (x86)\steam\steamapps\common\Gunfire Reborn\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.Serialization">
       <HintPath>..\Library\Game\Sirenix.Serialization.dll</HintPath>
@@ -91,31 +88,31 @@
     <Reference Include="System" />
     <Reference Include="UnhollowerBaseLib, Version=0.4.33.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\BepInEx\UnhollowerBaseLib.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Gunfire Reborn\BepInEx\core\UnhollowerBaseLib.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Gunfire Reborn\BepInEx\unhollowed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Gunfire Reborn\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\UnityEngine.IMGUIModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.InputModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\UnityEngine.InputModule.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Gunfire Reborn\BepInEx\unhollowed\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Gunfire Reborn\BepInEx\unhollowed\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\UnityEngine.UI.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Gunfire Reborn\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Gunfire Reborn\BepInEx\unhollowed\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

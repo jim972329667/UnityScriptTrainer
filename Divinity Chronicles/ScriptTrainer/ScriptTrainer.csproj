@@ -50,21 +50,17 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony20, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\BepInEx_64\0Harmony20.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\workshop\content\1449070\3227366562\Data\DLLs\0Harmony.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp-nstrip, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\Game\Assembly-CSharp-nstrip.dll</HintPath>
+    <Reference Include="Assembly-CSharp-nstrip">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Divinity Chronicles\JTW_Data\Managed\Assembly-CSharp-nstrip.dll</HintPath>
     </Reference>
-    <Reference Include="BepInEx, Version=5.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SimpleFileBrowser.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\BepInEx_64\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx.Harmony, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\BepInEx_64\BepInEx.Harmony.dll</HintPath>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Divinity Chronicles\JTW_Data\Managed\SimpleFileBrowser.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -75,45 +71,64 @@
     <Reference Include="System.Xml" />
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\Library\Unity\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Unity\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Unity\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Unity\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Unity\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Unity\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Unity\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Unity\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Library\Unity\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PotionWindow.cs" />
-    <Compile Include="RelicWindows.cs" />
-    <Compile Include="ItemWindows.cs" />
-    <Compile Include="MainWindow.cs" />
+    <Compile Include="Cards\ModCardInfo.cs" />
+    <Compile Include="Cards\ModFaithfulDevilCard.cs" />
+    <Compile Include="Cards\ModNeutralCard.cs" />
+    <Compile Include="Cards\ModSwineKingCard.cs" />
+    <Compile Include="Cards\ModWhiteDragonCard.cs" />
+    <Compile Include="Cards\ModHolyMonkCard.cs" />
+    <Compile Include="Cards\ModWukongCard.cs" />
+    <Compile Include="Cards\ModCardUtil.cs" />
+    <Compile Include="Cards\DynamicCardCreator.cs" />
+    <Compile Include="Windows\ModCardUI.cs" />
+    <Compile Include="Windows\PotionWindow.cs" />
+    <Compile Include="Windows\RelicWindows.cs" />
+    <Compile Include="Windows\ItemWindows.cs" />
+    <Compile Include="Windows\MainWindow.cs" />
     <Compile Include="ScriptPatch.cs" />
     <Compile Include="Scripts.cs" />
     <Compile Include="ScriptTrainer.cs" />
@@ -124,13 +139,16 @@
     <Compile Include="UnityGameUI\UIControls.cs" />
     <Compile Include="UnityGameUI\UINavigation.cs" />
     <Compile Include="UnityGameUI\UIWindows.cs" />
-    <Compile Include="UnityGameUI\WindowDragHandler.cs" />
+    <Compile Include="Cards\ModBladeSoulsCard.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="dynamiccardui" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "E:\Program Files (x86)\Steam\steamapps\common\Divinity Chronicles\BepInEx\Plugins\" /s /i /y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "E:\Program Files (x86)\Steam\steamapps\workshop\content\1449070\3227332234\Data\DLLs\" /s /i /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -101,7 +100,7 @@ namespace ScriptTrainer
             {
                 if (InfiniteLoadoutPoints)
                 {
-                    CharacterHelper.SetStat(pEntity, eCharacterStats.LOP, 999);
+                    CharacterHelper.SetStat(pEntity, eCharacterStats.LOP.ToString(), 999);
                 }
             }
         }

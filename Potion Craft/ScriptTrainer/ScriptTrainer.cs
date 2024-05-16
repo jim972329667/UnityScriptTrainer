@@ -2,15 +2,21 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using PotionCraft.LocalizationSystem;
+using PotionCraft.ManagersSystem.Input;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
+using Key = UnityEngine.InputSystem.Key;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using UniverseLib;
 
 namespace ScriptTrainer
 {
-    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "Potion Craft 内置修改器", "1.0.0")]
+    [BepInPlugin("aoe.top.plugins.ScriptTrainer", "Potion Craft 内置修改器", "1.0.1")]
     public class ScriptTrainer: BaseUnityPlugin
     {
         public static ScriptTrainer Instance;
@@ -23,9 +29,15 @@ namespace ScriptTrainer
 
         public float TimeScaleRate = 1f;
         public bool TimeScale = false;
+        public void WriteLog(string log, LogType type)
+        {
+            Logger.LogMessage(log);
+        }
         public void Awake()
         {
             Instance = this;
+
+            Universe.Init(null, WriteLog);
 
             #region[注入游戏补丁]
             var harmony = new Harmony("ScriptTrainer");
@@ -97,7 +109,7 @@ namespace ScriptTrainer
                 MainWindow.Initialize();
             }
 
-            if (Input.GetKeyDown(ScriptTrainer.ShowCounter.Value))
+            if (UniverseLib.Input.InputManager.GetKeyDown(ScriptTrainer.ShowCounter.Value))
             {
                 if (!MainWindow.initialized)
                 {

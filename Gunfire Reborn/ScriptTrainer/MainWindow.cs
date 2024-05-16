@@ -14,6 +14,9 @@ using Item;
 using HeroWarSign;
 using Relic;
 using DYPublic.Duonet;
+using System.Security.Cryptography;
+using System.IO;
+using Il2CppSystem.Threading.Tasks;
 
 namespace ScriptTrainer
 {
@@ -150,36 +153,90 @@ namespace ScriptTrainer
                 {
                     BasicScripts.AddButton(ref Position, "添加技能点", () =>
                     {
-                        //foreach(var x in ItemManager.ItemDict)
+                        //int pid = 0;
+                        //foreach (var item in NewPlayerManager.PlayerTeamerAccountIdDict)
                         //{
-                        //    ScriptTrainer.WriteLog($"{x.key}:{x.value.ItemID};{x.value.ItemMainType};{x.value.ItemSubType}");
-                        //    ScriptTrainer.WriteLog($"{x.value.SIProp.WeaponType};{x.value.SIProp.Amount};{x.value.SIProp.BulletUse};{x.value.SIProp.CurBullet};{x.value.SIProp.ClientCurBullet};{x.value.SIProp.CurPFBullet};{x.value.SIProp.Accuracy}");
-                        //    x.value.SIProp.CurBullet = 999;
-                        //    x.value.SIProp.ClientCurBullet = 999;
+                        //    pid = item.Key;
+                        //    break;
                         //}
-                        var datas = Singleton<NewUnlockManager>.instance.m_datas;
-                        homecontainer_GS2CNewUnlockProgressInfoClass undata = new homecontainer_GS2CNewUnlockProgressInfoClass();
-                        undata.lstNewProgress = new Il2CppSystem.Collections.Generic.List<homecontainer_GS2CNewUnlockProgressInfoClass.ClasslstNewProgress> ();
-                        foreach(var data in datas)
-                        {
-                            var und = new homecontainer_GS2CNewUnlockProgressInfoClass.ClasslstNewProgress();
-                            und.iSID = data.Value.SID;
-                            und.iValue = data.Value.TargetValue;
-                            und.iTargetValue = data.Value.TargetValue;
-                            undata.lstNewProgress.Add(und);
-                            ScriptTrainer.WriteLog(und);
-                        }
-                        Singleton<NewUnlockManager>.instance.UpdateDatas(undata);
-                        //if (ScriptPatch.test != -1)
-                        //{
-                        //    var player = NewPlayerManager.GetPlayer(ScriptPatch.test);
-                        //    var xx = player.playerProp;
-                        //    xx.Cash += 10000;
-                        //    player.SetServerProp(xx);
-                        //}
-                        
-                        
+                        //var player = NewPlayerManager.GetPlayer(pid);
+                        //if (pid == 0 || player == null)
+                        //    return;
 
+
+                        //var prop = player.playerProp;
+                        //prop.ShieldMax = 9999;
+                        //prop.ClientShield = 9999;
+                        //prop.Shield = 9999;
+                        //prop.WarGSCash = 999999;
+                        //prop.WarCash = 999999;
+                        //player.ShieldCalCom.SetServerProp(prop);
+
+                        //List<string> strings = new List<string>();
+                        //foreach (var x in DataHelper.DataMgr.RelicModule.m_RelicDataDict)
+                        //{
+                        //    strings.Add($"{x.Key};{x.value.IconID};{x.value.Name};{x.value.RelicType};{x.value.Desc}");
+                        //}
+                        //File.WriteAllLines("F:\\GR_Relics.txt", strings);
+                        //int pos = RelicManager.m_EquipRelic.Count + 1;
+                        //foreach (var x in DataHelper.DataMgr.RelicModule.m_RelicDataDict)
+                        //{
+                        //    if(x.value.RelicType == "RELIC_TYPE_NORMAL")
+                        //    {
+                        //        ScriptTrainer.WriteLog($"Relic:{x};");
+                        //        RelicManager.AddRelicObject(new RelicObject(x.Key, pos, 1, true, 0, false, true));
+                        //        pos++;
+                        //    }
+
+                        //}
+
+                        //for(int i = 1001; i < 1050; i++)
+                        //{
+                        //    var task = NewSeasonMgr.Instance.GetCurSeasonTask(i);
+                        //    if (task != null)
+                        //    {
+                        //        string text = $"Season Task {i}:{task.CurValue};{task.TotalValue};Ext:";
+                        //        foreach (var y in task.Exts)
+                        //        {
+                        //            text += $"type:{y.type};";
+                        //            foreach(var z in y.datas)
+                        //            {
+                        //                text += $"{z};";
+                        //            }
+                        //        }
+                        //        ScriptTrainer.WriteLog(text);
+                        //    }
+                        //}
+
+                        var season = NewSeasonMgr.Instance.CurSeasonData;
+                        ScriptTrainer.WriteLog($"Season :{season.Grade} {season.CurGradeExp} {season.Season} {season.TotalEx}");
+                        var xx = new homecontainer_GS2CReceiveRewardResultClass();
+                        xx.lstResult = new Il2CppSystem.Collections.Generic.List<homecontainer_GS2CReceiveRewardResultClass.ClasslstResult>();
+
+                        //NewSeasonMgr.Instance.ReceiveSeasonRewards(1);
+                        foreach (var x in season.TaskLst)
+                        {
+                            if (x.Exts.Count == 0 && x.CurValue != x.TotalValue)
+                            {
+                                var tmp = new homecontainer_GS2CReceiveRewardResultClass.ClasslstResult();
+                                tmp.SID = x.SID;
+                                tmp.iResult = x.TotalValue;
+                                xx.lstResult.Add(tmp);
+                                //NewSeasonMgr.Instance.InitCurSeasonTask(x.SID, x.CurValue, x.TotalValue, x.Exts);
+                            }
+                            string text = $"Season Task {x.SID}/{NewSeasonMgr.Instance.GetCurSeasonRewardStatus(x.SID)}:{x.CurValue};{x.TotalValue};";
+                            foreach (var y in x.Exts)
+                            {
+                                text += $"Ext: type:{y.type};";
+                                foreach (var z in y.datas)
+                                {
+                                    text += $"{z};";
+                                }
+                            }
+                            ScriptTrainer.WriteLog(text);
+                        }
+
+                        NewSeasonMgr.Instance.UpdateCurSeasonRewardsOnReceive(xx);
                         //foreach (var x in CharaterData.GetAllHeroListA())
                         //{
                         //    if (!CharaterData.OwnHeroSIDDict.ContainsKey(x))
@@ -210,6 +267,21 @@ namespace ScriptTrainer
                         //    weapon.SIProp.ClientCurBullet = weapon.SIProp.MaxBullet;
                         //}
                     });
+                    BasicScripts.AddToggle(ref Position, "最大全选/刷新",180, (bool state) =>
+                    {
+                        ScriptPatch.SetMaxChoose = state;
+                    });
+                    BasicScripts.AddToggle(ref Position, "无限弹药", 180, (bool state) =>
+                    {
+                        ZGGameObject.IsInfBullet = state;
+                    });
+                    BasicScripts.AddButton(ref Position, "添加技能点", () => 
+                    {
+                        Il2CppSystem.Collections.Generic.List<int> ints = new Il2CppSystem.Collections.Generic.List<int>();
+                        ints.Add(1004);
+                        ints.Add(1004);
+                        NewSeasonMgr.Instance.ReceiveRewards(ints);
+                    });
                     //BasicScripts.AddButton(ref Position, "添加技能点", () =>
                     //{
                     //    ScriptTrainer.WriteLog($"{UserCenter.User_URL};{UserCenter.UserReportUrl};{UserCenter.PayReportUrl}");
@@ -238,11 +310,11 @@ namespace ScriptTrainer
                 #region[获取物品]
                 ResetCoordinates(true, true);
 
-                //GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
-                //ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
-                //ItemScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
+                GameObject ItemScripts = UIControls.createUIPanel(uiPanel, "410", "600", null);
+                ItemScripts.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
+                ItemScripts.GetComponent<RectTransform>().anchoredPosition = new Vector2(-70, -20);
 
-                //ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
+                ItemWindow itemWindow = new ItemWindow(ItemScripts, elementX, elementY);
 
 
                 #endregion
@@ -263,7 +335,7 @@ namespace ScriptTrainer
                 Navigation[] nav = new Navigation[]
                 {
                     new Navigation("BasicScripts","基础功能", BasicScripts, true),
-                    //new Navigation("ItemScripts", "物品添加", ItemScripts, false),
+                    new Navigation("ItemScripts", "物品添加", ItemScripts, false),
                 };
 
                 UINavigation.Initialize(nav, NavPanel);

@@ -146,25 +146,21 @@ namespace ScriptTrainer
             ItemPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
             ItemPanel.GetComponent<RectTransform>().anchoredPosition = new Vector2(10, 0);
 
-            var ItemList = GetItemData();
             int maxsort = MainWindow.canvas?.GetComponent<Canvas>().sortingOrder ?? Extensions.GetMaxSortingOrder();
             maxsort++;
-            for (int i = 0;i< ItemList.Count; i++)
+            int i = 0;
+            foreach (var item in GetItemData())
             {
-                var btn = CreateItemButton("获得", maxsort, ItemList[i], ItemPanel, () =>
+                var btn = CreateItemButton("获得", maxsort, item, ItemPanel, () =>
                 {
-                    SpawnItem(ItemList[i]);
+                    SpawnItem(item);
                 });
-                ItemButtons.Insert(i,btn);
-                if ((i + 1) % 3 == 0)
+                ItemButtons.Add(btn);
+                i++;
+                if (i % 3 == 0)
                 {
                     hr();
                 }
-            }
-            int num = 0;
-            foreach(var x in UnityEngine.GameObject.FindObjectsOfType<Canvas>())
-            {
-                Debug.Log($"Num {num++}: {x.sortingOrder}");
             }
         }
 

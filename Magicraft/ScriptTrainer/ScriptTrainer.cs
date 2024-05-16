@@ -9,10 +9,12 @@ using UniverseLib;
 using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Security.Policy;
 
 namespace ScriptTrainer
 {
-    [BepInPlugin("ScriptTrainer.Jim97.Magicraft", "魔法工艺 内置修改器", "1.0.4")]
+    [BepInPlugin("ScriptTrainer.Jim97.Magicraft", "魔法工艺 内置修改器", "1.0.6")]
     public class ScriptTrainer: BaseUnityPlugin
     {
         public static ScriptTrainer Instance;
@@ -66,6 +68,8 @@ namespace ScriptTrainer
 
             #endregion
 
+            LoadConfig();
+
             #region 注入游戏修改器UI
             YourTrainer = GameObject.Find("ZG_Trainer");
             if (YourTrainer == null)
@@ -80,7 +84,6 @@ namespace ScriptTrainer
             #endregion
 
             FindGameObject();
-            
         }
         public void Start()
         {
@@ -101,7 +104,7 @@ namespace ScriptTrainer
         public static MethodInfo Cmd_RunDebugCmd { get; private set; }
         public static MonoBehaviour PlayerManagerObject { get; private set; }
         public static TestController TestController { get; private set; }
-        public static MethodInfo GetSpellConfig {  get; private set; }
+        public static Assembly MainAssembly {  get; private set; }
 
         public static void Prefix_Cmd_PrintLog(string __0)
         {
@@ -115,6 +118,7 @@ namespace ScriptTrainer
                 //Debug.Log($"ZG:{assembly.GetName().Name}");
                 if (assembly.GetName().Name == "Assembly-CSharp")
                 {
+                    MainAssembly = assembly;
                     foreach (Type type in assembly.GetTypes())
                     {
                         if (type.IsSubclassOf(typeof(MonoBehaviour)))
@@ -176,21 +180,6 @@ namespace ScriptTrainer
                     }
                 }
             }
-            //GetSpellConfig = typeof(SpellConfig).GetMethod("GetConfig") ?? typeof(SpellConfig).GetMethod("GetConfigCopy");
-            //foreach(var me in typeof(SpellConfig).GetMethods())
-            //{
-            //    Log(me.Name);
-            //}
-            GetSpellConfig = GetZGMethod<SpellConfig>(new List<string>()
-            {
-                "GetConfig",
-                "GetConfigCopy"
-            }, typeof(SpellConfig));
-
-            if (GetSpellConfig != null)
-            {
-                Log($"ZG:GetSpellConfig已找到");
-            }
         }
         #endregion
         public MethodInfo GetZGMethod<T>(List<string> targets, Type returnType)
@@ -235,11 +224,89 @@ namespace ScriptTrainer
                 return null;
             }
         }
+        public static object PlayerManagerInvoke(string[] methods, params object[] parameters)
+        {
+            try
+            {
+                if (PlayerManagerObject != null)
+                {
+                    foreach (var method in methods)
+                    {
+                        MethodInfo Method = PlayerManagerObject.GetType().GetMethod(method);
+                        if (Method != null)
+                        {
+                            var tmp = Method.Invoke(PlayerManagerObject, parameters);
+                            if (tmp != null)
+                            {
+                                return tmp;
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                Instance.Log(e, LogType.Error);
+                return null;
+            }
+        }
         public void OnDestroy()
         {
             // 移除 MainWindow.testAssetBundle 加载时的资源
             //AssetBundle.UnloadAllAssetBundles(true);
 
+        }
+
+        public void LoadConfig()
+        {
+            List<ZGItem> list = JsonConvert.DeserializeObject<List<ZGItem>>(Resources.Load<TextAsset>("Configs/" + "RelicConfig").text);
+            foreach(var item in list)
+            {
+                item.Type = "RelicConfig";
+            }
+            ItemWindow.ItemDic[0] = list;
+            Log($"RelicConfig : {list.Count}");
+
+            list = JsonConvert.DeserializeObject<List<ZGItem>>(Resources.Load<TextAsset>("Configs/" + "PotionConfig").text);
+            foreach (var item in list)
+            {
+                item.Type = "PotionConfig";
+            }
+            ItemWindow.ItemDic[1] = list;
+            Log($"PotionConfig : {list.Count}");
+
+            list = JsonConvert.DeserializeObject<List<ZGItem>>(Resources.Load<TextAsset>("Configs/" + "SpellConfig").text);
+            foreach (var item in list)
+            {
+                item.Type = "SpellConfig";
+            }
+            ItemWindow.ItemDic[2] = list;
+            Log($"SpellConfig : {list.Count}");
+
+            list = JsonConvert.DeserializeObject<List<ZGItem>>(Resources.Load<TextAsset>("Configs/" + "WandConfig").text);
+            foreach (var item in list)
+            {
+                item.Type = "WandConfig";
+            }
+            ItemWindow.ItemDic[3] = list;
+            Log($"WandConfig : {list.Count}");
+
+            list = JsonConvert.DeserializeObject<List<ZGItem>>(Resources.Load<TextAsset>("Configs/" + "CurseConfig").text);
+            foreach (var item in list)
+            {
+                item.Type = "CurseConfig";
+            }
+            ItemWindow.ItemDic[4] = list;
+            Log($"CurseConfig : {list.Count}");
+
+            list = JsonConvert.DeserializeObject<List<ZGItem>>(Resources.Load<TextAsset>("Configs/" + "UnitConfig").text);
+            foreach (var item in list)
+            {
+                item.Type = "UnitConfig";
+            }
+            ItemWindow.ItemDic[5] = list;
+            Log($"UnitConfig : {list.Count}");
         }
 
         public static void WriteCmdLog()

@@ -218,6 +218,15 @@
     <Reference Include="Il2CppSystem">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Ship of Fools\BepInEx\unhollowed\Il2CppSystem.dll</HintPath>
     </Reference>
+    <Reference Include="Rewired">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Ship of Fools\BepInEx\unhollowed\Rewired.dll</HintPath>
+    </Reference>
+    <Reference Include="Rewired_Core">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Ship of Fools\BepInEx\unhollowed\Rewired_Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Rewired_Windows">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Ship of Fools\BepInEx\unhollowed\Rewired_Windows.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Localization">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Ship of Fools\BepInEx\unhollowed\Unity.Localization.dll</HintPath>
     </Reference>

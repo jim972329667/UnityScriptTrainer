@@ -8,6 +8,9 @@ using ZGScriptTrainer.UI;
 using System.Collections;
 using System;
 using UnityEngine.Networking;
+using Rewired;
+
+
 
 #if IL2CPP_6E
 using Il2CppInterop.Runtime.Injection;
@@ -34,6 +37,7 @@ namespace ZGScriptTrainer
             DontDestroyOnLoad(obj);
             obj.hideFlags = HideFlags.HideAndDontSave;
             Instance = obj.AddComponent<ZGTrainerBehaviour>();
+            //ScriptPatch.debugMenu = obj.AddComponent<DebugMenu>();
             RuntimeHelper.StartCoroutine(GetText());
         }
         internal void Update()
@@ -45,6 +49,13 @@ namespace ZGScriptTrainer
             if (UniverseLib.Input.InputManager.GetKeyDown(ZGScriptTrainer.ShowCounter.Value))
             {
                 UIManager.ShowMenu = !UIManager.ShowMenu;
+            }
+            if (UniverseLib.Input.InputManager.GetKeyDown(KeyCode.Tab))
+            {
+                if(ScriptPatch.debugMenu != null)
+                {
+                    ScriptPatch.debugMenu.Activate(ReInput.players.GetSystemPlayer());
+                }
             }
         }
         internal void OnDestroy()

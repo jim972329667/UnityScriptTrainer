@@ -28,6 +28,7 @@ using Il2CppSystem.Collections.Generic;
 using ScriptTrainer.UI;
 using System.IO;
 using ScriptTrainer.Runtime;
+using Item;
 
 
 // Also make a reference in your library to Il2Cppmscorlib.dll, from BepInEx\unhollowed folder
@@ -101,6 +102,7 @@ namespace ScriptTrainer
     {
         public ZGGameObject(IntPtr handle) : base(handle) { }
 
+        public static bool IsInfBullet = false;
         public static ZGGameObject Instance;
         public MainWindow mw;
         Action<object> Log;
@@ -125,6 +127,18 @@ namespace ScriptTrainer
                 UnityEngine.Event.current.Use();
             }
 
+            if (IsInfBullet)
+            {
+                if (SurvivalModeManager.Instance != null)
+                {
+                    var weapon = SurvivalModeManager.Instance.GetCurWeaponObject();
+                    if(weapon != null)
+                    {
+                        weapon.SIProp.ClientCurBullet = 999;
+                        weapon.SIProp.MaxBullet = 999;
+                    }
+                }
+            }
         }
     }
 }

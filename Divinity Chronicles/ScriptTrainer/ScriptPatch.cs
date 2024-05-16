@@ -1,11 +1,15 @@
 ﻿using HarmonyLib;
 using JTW;
+using ScriptTrainer.Cards;
+using ScriptTrainer.Windows;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.UI.Image;
 using Random = UnityEngine.Random;
 using Type = System.Type;
@@ -91,6 +95,7 @@ namespace ScriptTrainer
         //    }
 
         //}
+
         [HarmonyPatch(typeof(Card), "GetEnergyCost")]
         public class CardOverridePatch_GetEnergyCost
         {
@@ -137,6 +142,82 @@ namespace ScriptTrainer
                         }
                     }
                 }
+            }
+        }
+
+        [HarmonyPatch]
+        public class Player_LoadCards_Patch
+        {
+            public static IEnumerable<MethodBase> TargetMethods()
+            {
+                IEnumerable<Type> enumerable = from t in Assembly.GetAssembly(typeof(Player)).GetTypes()
+                                               where t.IsSubclassOf(typeof(Player)) && !t.IsAbstract && !(t.GetConstructor(Type.EmptyTypes) == null)
+                                               select t;
+                return enumerable.SelectMany(t => t.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)).Where(m => m.Name == "LoadCards");
+            }
+            [HarmonyPostfix]
+            public static void Postfix(ref Player __instance, ref CardPool cardPool)
+            {
+                if (DynamicCardCreator.Cards.TryGetValue(__instance.GetType().ToString(), out List<Card> value))
+                {
+                    foreach(var x in value)
+                    {
+                        IModCard modCard = x as IModCard;
+                        if(!DynamicCardCreator.BannedList.Contains(modCard.GetModInfo().CardName))
+                            cardPool.AddCard(Card.Clone(x));
+                    }
+                }
+                Debug.Log($"ZGZGZG:{__instance.GetType()} : {cardPool.GetCards().Count}");
+
+            }
+        }
+        [HarmonyPatch(typeof(CardSet), "GenerateCards")]
+        public class CardSetOverridePatch_GenerateCards
+        {
+            [HarmonyPostfix]
+            public static void Postfix(string cardAlignment, ref List<Card> __result)
+            {
+                if (cardAlignment == "Neutral")
+                {
+                    if (DynamicCardCreator.Cards.TryGetValue("Neutral", out List<Card> value))
+                    {
+                        foreach(var x in value)
+                        {
+                            IModCard modCard = x as IModCard;
+                            if (!DynamicCardCreator.BannedList.Contains(modCard.GetModInfo().CardName))
+                                __result.Add(Card.Clone(x));
+                        }
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(EntranceSceneController), "SetupMoreModesButtons")]
+        public class EntranceSceneControllerOverridePatch_SetupMoreModesButtons
+        {
+            [HarmonyPostfix]
+            public static void Postfix(EntranceSceneController __instance)
+            {
+                GameObject canvasGO = Traverse.Create(__instance).Field("m_canvasGO").GetValue<GameObject>();
+                GameObject moreModesButtonsGO = canvasGO.transform.Find("MoreModesButtons").gameObject;
+
+                GameObject gameObject = GameObject.Instantiate(moreModesButtonsGO.transform.Find("StoryTestButton").gameObject);
+                gameObject.transform.SetParent(moreModesButtonsGO.transform, false);
+                var title = gameObject.GetComponent<TitleButtonNewComponent>();
+                title.SetText("Mod卡牌管理");
+                title.Clicked += delegate ()
+                {
+                    if(ScriptTrainer.CardUI != null)
+                    {
+                        GameObject cardUI = GameObject.Instantiate(ScriptTrainer.CardUI);
+                        cardUI.AddComponent<ModCardUI>();
+                        cardUI.transform.SetParent(canvasGO.transform, false);
+                        cardUI.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                        cardUI.transform.localPosition = Vector3.zero;
+                    }
+                };
+                gameObject.SetActive(true);
+                gameObject.transform.SetSiblingIndex(2);
             }
         }
     }

@@ -1,9 +1,12 @@
 ﻿
+using HarmonyLib;
+
 namespace ScriptTrainer
 {
     public class ScriptPatch
     {
         #region[全局参数]
+        
         #endregion
 
         #region 前补丁
@@ -54,6 +57,19 @@ namespace ScriptTrainer
         //initialNumberOfUses 是成员名称， T为该成员类型
         #endregion
 
+        [HarmonyPatch(typeof(DebugMenu), "AddDebugCommand")]
+        public class DebugMenuOverridePatch_AddDebugCommand
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(string p_label)
+            {
+                if(p_label.StartsWith("Hide UI (F10)"))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
 
     }
 }

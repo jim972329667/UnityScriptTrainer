@@ -31,8 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ItemWindows.cs" />
-    <Compile Include="MainWindow.cs" />
     <Compile Include="ScriptPatch.cs" />
     <Compile Include="Scripts.cs" />
     <Compile Include="ScriptTrainer.cs" />
@@ -45,7 +43,8 @@
     <Reference Include="0Harmony">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Bravery and Greed\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Bravery and Greed\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Core">
@@ -72,6 +71,10 @@
     </Reference>
     <Reference Include="UnhollowerRuntimeLib">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Bravery and Greed\BepInEx\core\UnhollowerRuntimeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Bravery and Greed\BepInEx\unhollowed\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -106,7 +109,6 @@
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Bravery and Greed\BepInEx\unhollowed\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <Import Project="..\..\..\UnityGameUI\UnityGameUI.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetPath)" "E:\Program Files (x86)\Steam\steamapps\common\Bravery and Greed\BepInEx\Plugins\" /s /i /y</PostBuildEvent>

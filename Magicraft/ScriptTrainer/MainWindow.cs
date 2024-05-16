@@ -20,7 +20,6 @@ namespace ScriptTrainer
         //private static TooltipGUI toolTipComp = null;
         public static DragAndDrog DragAndDrog=null;
         // UI
-        public static AssetBundle testAssetBundle = null;
         public static GameObject canvas = null;
         private static GameObject uiPanel = null;
         public static readonly int width = Mathf.Min(Screen.width, 740);
@@ -229,6 +228,13 @@ namespace ScriptTrainer
                         UIWindows.SpawnInputDialog("添加", "旧神之血", "100", (string text) =>
                         {
                             Scripts.AddBlood(text.ConvertToIntDef(100));
+                        });
+                    });
+                    UIWindows.AddButton(ref point, "增加混沌核心", BasicScripts, () =>
+                    {
+                        UIWindows.SpawnInputDialog("添加", "混沌核心", "5", (string text) =>
+                        {
+                            ScriptTrainer.WriteGameCmd($"core {text.ConvertToIntDef(5)}");
                         });
                     });
                     UIWindows.Hr(ref point, BasicScripts);

@@ -1,21 +1,18 @@
 ﻿using BepInEx;
 using HarmonyLib;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityGameUI;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
-using UniverseLib.Utility;
 using static UnityGameUI.UIControls;
 using Image = UnityEngine.UI.Image;
 using Object = UnityEngine.Object;
@@ -26,8 +23,63 @@ namespace ScriptTrainer
     public class ZGItem
     {
         public string Type {  get; set; }
-        public int ID { get; set; }
+        public int id { get; set; }
         public int Count {  get; set; }
+        public string Name { get; set; }
+        public string Desc { get; set; }
+        public string icon { get; set; }
+        public string maxMP { get; set; }
+        public string shootInterval { get; set; }
+        public string mpRecovery { get; set; }
+        public string coolDown { get; set; }
+        public int unitType {  get; set; }
+
+        public object GetConfig()
+        {
+            if (Type.IsNullOrWhiteSpace() || ScriptTrainer.MainAssembly == null)
+                return null;
+            var method = GetZGMethod("GetConfig", "GetConfigCopy");
+            if (method == null) return "";
+            return method.Invoke(null, new object[] { id });
+        }
+        public string GetName()
+        {
+            var obj = GetConfig();
+            if (obj == null) return "";
+            var method = GetZGMethod("GetName");
+            
+            if (method == null) return "";
+            ParameterInfo[] parameters = method.GetParameters();
+            object[] defaultArgs = parameters.Select(p => p.HasDefaultValue ? p.DefaultValue : null).ToArray();
+            return (string)method.Invoke(obj, defaultArgs) ?? "";
+        }
+        public object ZGInvoke(string[] methods, params object[] args)
+        {
+            var obj = GetConfig();
+            if (obj == null) return null;
+            var method = GetZGMethod(methods);
+            if (method == null) return null;
+            if(args == null)
+            {
+                ParameterInfo[] parameters = method.GetParameters();
+                object[] defaultArgs = parameters.Select(p => p.HasDefaultValue ? p.DefaultValue : null).ToArray();
+                return (string)method.Invoke(obj, defaultArgs) ?? "";
+            }
+            return method.Invoke(obj, args);
+        }
+        public MethodInfo GetZGMethod(params string[] targets)
+        {
+            var type = ScriptTrainer.MainAssembly.GetType(Type);
+            if (type == null) return null;
+            foreach (var me in type.GetMethods())
+            {
+                if (targets.Contains(me.Name))
+                {
+                    return me;
+                }
+            }
+            return null;
+        }
     }
     internal class ItemWindow : MonoBehaviour
     {
@@ -39,6 +91,7 @@ namespace ScriptTrainer
         public static ItemWindow Instance = null;
         public static bool initialized = false;
 
+        public static Dictionary<int,List<ZGItem>> ItemDic = new Dictionary<int,List<ZGItem>>();
         #region[数据分页相关]
         private static List<GameObject> ItemButtons = new List<GameObject>();
         public static Dropdown ItemTypeDropdown;
@@ -72,8 +125,15 @@ namespace ScriptTrainer
         {
             if (TryGetData())
             {
-                container();
-                initialized = true;
+                try
+                {
+                    container();
+                    initialized = true;
+                }
+                catch (Exception e)
+                {
+                    ScriptTrainer.Instance.Log(e, LogType.Error);
+                }
             }
         }
         #region[创建详细]
@@ -157,13 +217,10 @@ namespace ScriptTrainer
             Sprite checkmarkSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#8C9EFFFF"));
             Sprite customMaskSprite = UIControls.createSpriteFrmTexture(UIControls.createDefaultTexture("#E65100FF"));
             ItemPanel = UIControls.createUIScrollView(Panel, bgSprite2, customMaskSprite, scrollbarSprite, new Vector2(620, 350));
-            //ItemPanel = UIControls.createUIPanel(Panel, "300", "600");
-            //ItemPanel.GetComponent<Image>().color = UIControls.HTMLString2Color("#424242FF");
+
             ItemPanel.scrollView.GetComponent<RectTransform>().anchoredPosition = new Vector2(10, -30);
             ItemPanel.scrollView.GetComponent<ScrollRect>().scrollSensitivity = 40;
             var gridgroup = ItemPanel.content.AddComponent<VerticalLayoutGroup>();
-            //gridgroup.cellSize = new Vector2(190, 50);
-            //gridgroup.spacing = new Vector2(10, 5);
             gridgroup.spacing = 5;
 
 
@@ -173,6 +230,16 @@ namespace ScriptTrainer
 
             int num = 0;
             GameObject line = new GameObject("ItemLine" + 1);
+            ScriptTrainer.Instance.Log("开始获取GetItemData");
+
+            try
+            {
+                List<ZGItem> tmps = GetItemData(index);
+            }
+            catch(Exception e)
+            {
+                ScriptTrainer.Instance.Log(e, LogType.Error);
+            }
 
             foreach (ZGItem item in GetItemData(index))
             {
@@ -348,49 +415,45 @@ namespace ScriptTrainer
         #endregion
         public static void SpawnItem(ZGItem item, int count = 1)
         {
-            if (item.Type == "relic")
+            if (item.Type == "RelicConfig")
             {
                 for (int i = 0; i < count; i++)
                 {
-                    ScriptTrainer.WriteGameCmd($"relic {item.ID}");
+                    ScriptTrainer.WriteGameCmd($"relic {item.id}");
                 } 
             }
-            else if (item.Type == "potion")
+            else if (item.Type == "PotionConfig")
             {
                 for (int i = 0; i < count; i++)
                 {
-                    ScriptTrainer.WriteGameCmd($"potion {item.ID}");
+                    ScriptTrainer.WriteGameCmd($"potion {item.id}");
                 }
             }
-            else if (item.Type == "spell")
+            else if (item.Type == "SpellConfig")
             {
-                ScriptTrainer.WriteGameCmd($"spell {item.ID} {count}");
+                ScriptTrainer.WriteGameCmd($"spell {item.id} {count}");
             }
-            else if (item.Type == "wand")
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    ScriptTrainer.WriteGameCmd($"wand {item.ID}");
-                }
-            }
-            else if (item.Type == "curse")
+            else if (item.Type == "WandConfig")
             {
                 for (int i = 0; i < count; i++)
                 {
-                    ScriptTrainer.WriteGameCmd($"curse {item.ID}");
+                    ScriptTrainer.WriteGameCmd($"wand {item.id}");
                 }
             }
-            else if (item.Type == "unit")
+            else if (item.Type == "CurseConfig")
             {
                 for (int i = 0; i < count; i++)
                 {
-                    ScriptTrainer.WriteGameCmd($"unit {item.ID}");
+                    ScriptTrainer.WriteGameCmd($"curse {item.id}");
                 }
             }
-            //else if (item.Type == "room")
-            //{
-            //    ScriptTrainer.WriteGameCmd($"stage {item.ID}");
-            //}
+            else if (item.Type == "UnitConfig")
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    ScriptTrainer.WriteGameCmd($"unit {item.id}");
+                }
+            }
             return;
         }
 
@@ -408,7 +471,7 @@ namespace ScriptTrainer
         #region[获取数据相关函数]
         private static bool TryGetData()
         {
-            if (WandConfig.dic.Count == 0 || UnitConfig.dic.Count == 0 || SpellConfig.dic.Count == 0 || RelicConfig.dic.Count == 0 || PotionConfig.dic.Count == 0 || CurseConfig.dic.Count == 0 || ScriptTrainer.PlayerManagerInvoke("get_BattleDat", null) == null)
+            if (ItemDic.Count == 0 || ScriptTrainer.PlayerManagerInvoke(new string[] { "get_BattleDat" , "get_BaData" }, null) == null)
             {
                 return false;
             }
@@ -416,56 +479,21 @@ namespace ScriptTrainer
         }
         private List<ZGItem> GetItemData(int index = 0)
         {
-            //SelectWand = ScriptTrainer.PlayerManagerInvoke("get_SelectedWand", null);
-            List<ZGItem> ItemData = new List<ZGItem>();
-            switch (index)
+            ScriptTrainer.Instance.Log("开始获取Items");
+            ItemDic.TryGetValue(index , out List<ZGItem> ItemData);
+            
+            if(index == 5)
             {
-                default:
-                case 0:
-                    foreach(var x in RelicConfig.dic)
+                List<ZGItem> NewItemData = new List<ZGItem>();
+                foreach(var item in ItemData) 
+                { 
+                    if(item.unitType > 2 && item.unitType < 7)
                     {
-                        ItemData.Add(new ZGItem() { Count = 1,ID =x.Key, Type = "relic" });
+                        NewItemData.Add(item);
                     }
-                    break;
-                case 1:
-                    foreach (var x in PotionConfig.dic)
-                    {
-                        ItemData.Add(new ZGItem() { Count = 1, ID = x.Key, Type = "potion" });
-                    }
-                    break;
-                case 2:
-                    foreach (var x in SpellConfig.dic)
-                    {
-                        ItemData.Add(new ZGItem() { Count = 1, ID = x.Key, Type = "spell" });
-                    }
-                    break;
-                case 3:
-                    foreach (var x in WandConfig.dic)
-                    {
-                        ItemData.Add(new ZGItem() { Count = 1, ID = x.Key, Type = "wand" });
-                    }
-                    break;
-                case 4:
-                    foreach (var x in CurseConfig.dic)
-                    {
-                        ItemData.Add(new ZGItem() { Count = 1, ID = x.Key, Type = "curse" });
-                    }
-                    break;
-                case 5:
-                    foreach (var x in UnitConfig.dic)
-                    {
-                        if((int)x.Value.unitType == 3 || (int)x.Value.unitType == 4 || (int)x.Value.unitType == 5 || (int)x.Value.unitType == 6)
-                            ItemData.Add(new ZGItem() { Count = 1, ID = x.Key, Type = "unit" });
-                    }
-                    break;
-                //case 6:
-                //    foreach (var x in RoomConfig.dic)
-                //    {
-                //        ItemData.Add(new ZGItem() { Count = 1, ID = x.Key, Type = "room" });
-                //    }
-                //    break;
+                }
+                ItemData = NewItemData;
             }
-
             ScriptTrainer.Instance.Log($"ZG:全物品数量:{ItemData.Count}");
 
             ItemData = FilterItemData(ItemData);
@@ -504,37 +532,7 @@ namespace ScriptTrainer
         {
             try
             {
-                if (item.Type == "relic")
-                {
-                    return RelicConfig.GetConfig(item.ID).GetName(true) ?? "";
-                }
-                else if (item.Type == "potion")
-                {
-                    return PotionConfig.GetConfig(item.ID).GetName() ?? "";
-                }
-                else if (item.Type == "spell")
-                {
-                    var x = (SpellConfig)ScriptTrainer.GetSpellConfig?.Invoke(null, new object[] { item.ID });
-                    if (x != null)
-                        return x.GetName(true) ?? "";
-                }
-                else if (item.Type == "wand")
-                {
-                    return WandConfig.GetConfig(item.ID).GetName() ?? "";
-                }
-                else if (item.Type == "curse")
-                {
-                    return CurseConfig.GetConfig(item.ID).GetName() ?? "";
-                }
-                else if (item.Type == "unit")
-                {
-                    return UnitConfig.GetConfig(item.ID).GetName() ?? "";
-                }
-                else if (item.Type == "room")
-                {
-                    return RoomConfig.GetConfig(item.ID).name ?? "";
-                }
-                return "";
+                return item.GetName();
             }
             catch (Exception ex)
             {
@@ -546,67 +544,24 @@ namespace ScriptTrainer
         {
             try
             {
-                if (item.Type == "relic")
-                {
-                    var tmp = RelicConfig.GetConfig(item.ID);
-                    string ra = tmp.GetStrRarity() ?? string.Empty;
-                    string info = tmp.GetInfo(true) ?? "";
-                    return ra + "\n" + info;
-                }
-                else if (item.Type == "potion")
-                {
-                    return PotionConfig.GetConfig(item.ID).GetInfo() ?? "";
-                }
-                else if (item.Type == "spell")
-                {
-                    var tmp  = (SpellConfig)ScriptTrainer.GetSpellConfig?.Invoke(null, new object[] { item.ID });
+                string ra = (string)item.ZGInvoke(new string[] { "GetStrRarity" }, null) ?? string.Empty;
+                string info = (string)item.ZGInvoke(new string[] { "GetInfo" }, null) ?? string.Empty;
 
-                    string ra = tmp?.GetStrRarity() ?? string.Empty;
-                    //MethodInfo methodInfo = tmp.GetType().GetMethod("GetInfo");
-                    //var methodInfo2 = SelectWand.GetType().GetMethod("get_WandCfg");
-                    //WandConfig wand = (WandConfig)methodInfo2?.Invoke(SelectWand, null);
-                    //string info = string.Empty;
-                    //if (wand != null)
-                    //{
-                    //    WandConfig tmp2 = WandConfig.GetConfig(wand.id);
-                    //    if (tmp2.normalSlots.Length > 0)
-                    //    {
-                    //        //info = (string)methodInfo.Invoke(tmp, new object[] { SelectWand, tmp2.normalSlots[0] });
-                    //        info = tmp.GetInfo((GMPOEJNJJCF)SelectWand, tmp2.normalSlots[0]);
-                    //    }
-                    //    else
-                    //    {
-                    //        info = tmp.GetInfo() ?? "";
-                    //    }
-                    //}
-                    //else
-                    //    info = tmp.GetInfo() ?? "";
-
-                    string info = tmp.GetInfo() ?? "";
-                    return ra + "\n" + info;
-                }
-                else if (item.Type == "wand")
+                switch (item.Type)
                 {
-                    WandConfig tmp = WandConfig.GetConfig(item.ID);
-                    string info = tmp.GetInfo() ?? "";
-                    return $"魔法值：{tmp.maxMP}\n射击间隔：{tmp.shootInterval}\n回魔：{tmp.mpRecovery}/s\n冷却：{tmp.coolDown}\n{info}";
+                    case "PotionConfig":
+                        return info;
+                    case "RelicConfig":
+                    case "CurseConfig":
+                    case "SpellConfig":
+                        return ra + "\n" + info;
+                    case "UnitConfig":
+                        return item.GetName();
+                    case "WandConfig":
+                        return $"魔法值：{item.maxMP}\n射击间隔：{item.shootInterval}\n回魔：{item.mpRecovery}/s\n冷却：{item.coolDown}\n{info}";
+                    default:
+                        return null;
                 }
-                else if (item.Type == "curse")
-                {
-                    CurseConfig tmp = CurseConfig.GetConfig(item.ID);
-                    string ra = tmp.GetStrRarity() ?? string.Empty;
-                    string info = tmp.GetInfo() ?? "";
-                    return ra + "\n" + info;
-                }
-                else if (item.Type == "unit")
-                {
-                    return UnitConfig.GetConfig(item.ID).GetName() ?? "";
-                }
-                else if (item.Type == "room")
-                {
-                    return $"阶段:{RoomConfig.GetConfig(item.ID).belongStage}";
-                }
-                return "";
             }
             catch(Exception ex)
             {
@@ -619,34 +574,23 @@ namespace ScriptTrainer
         {
             try
             {
-                if (item.Type == "relic")
+                switch (item.Type)
                 {
-                    return Resources.Load<Sprite>($"Textures/RelicIcons/{item.ID}");
+                    case "RelicConfig":
+                        return Resources.Load<Sprite>($"Textures/RelicIcons/{item.id}");
+                    case "PotionConfig":
+                        return Resources.Load<Sprite>($"Textures/PotionIcons/{item.id}");
+                    case "CurseConfig":
+                        return Resources.Load<Sprite>($"Textures/CurseIcons/{item.id}");
+                    case "UnitConfig":
+                        return Resources.Load<Sprite>($"Textures/UnitIcons/{item.id}");
+                    case "SpellConfig":
+                        return Resources.Load<Sprite>($"Textures/SpellIcons/{item.icon}");
+                    case "WandConfig":
+                        return Resources.Load<Sprite>($"Textures/WandIcons/{item.icon}");
+                    default:
+                        return null;
                 }
-                else if (item.Type == "potion")
-                {
-                    return Resources.Load<Sprite>($"Textures/PotionIcons/{item.ID}");
-                }
-                else if (item.Type == "spell")
-                {
-                    var x = (SpellConfig)ScriptTrainer.GetSpellConfig?.Invoke(null, new object[] { item.ID });
-                    if(x != null)
-                        return Resources.Load<Sprite>($"Textures/SpellIcons/{x.icon}");
-                }
-                else if (item.Type == "wand")
-                {
-                    return Resources.Load<Sprite>($"Textures/WandIcons/{WandConfig.GetConfig(item.ID).icon}");
-                }
-                else if (item.Type == "curse")
-                {
-                    return Resources.Load<Sprite>($"Textures/CurseIcons/{item.ID}");
-                }
-                else if (item.Type == "unit")
-                {
-                    return Resources.Load<Sprite>($"Textures/UnitIcons/{item.ID}");
-                }
-
-                return null;
             }
          
             catch(Exception ex)

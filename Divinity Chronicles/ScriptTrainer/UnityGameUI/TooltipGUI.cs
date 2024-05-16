@@ -1,6 +1,8 @@
 ﻿
+using JTW;
 using ScriptTrainer;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,6 +13,8 @@ namespace UnityGameUI
     {
         public static TooltipGUI instance = null;
         public GameObject TooltipText = null;
+        public GameObject CardTool = null;
+        public List<GameObject> AdditionalInfo = new List<GameObject>();
         public string TooltipTextValue = string.Empty;
         private bool initialized = false;
         public void Start()
@@ -28,21 +32,51 @@ namespace UnityGameUI
                     if (mouse.y < gameObject.transform.position.y + size.y / 2 && mouse.y > gameObject.transform.position.y - size.y / 2)
                     {
                         //TooltipText.transform.position = new Vector2(mouse.x + 15, Screen.height - mouse.y + 15);
-                        TooltipText.GetComponent<TooltipTextScript>().ShowTooltip(true, 0.2f);
+                        CardTool?.SetActive(true);
+                        if(TooltipTextValue != "")
+                            TooltipText.GetComponent<TooltipTextScript>().ShowTooltip(true, 0.2f);
                         return;
                     }
                 }
                 TooltipText.GetComponent<TooltipTextScript>().HideTooltip(true, 0f, false);
+                CardTool?.SetActive(false);
             }
         }
-        public void Init(string text)
+        public void Init(string text, Card card = null)
         {
             TooltipText = Instantiate(Resources.Load<GameObject>("UI/TooltipText"));
             TooltipTextScript component = TooltipText.GetComponent<TooltipTextScript>();
             TooltipTextValue = text;
-            component.SetText(TooltipTextValue, new TooltipTextScript.PopupTextLayoutInfo() { minWidth = 165});
+            if (card != null)
+            {
+                CardTool = Instantiate(Resources.Load<GameObject>("CombatObjects/CardUINew"));
+                CardTool.transform.SetParent(MainWindow.dragAndDrog.gameObject.transform, false);
+                CardTool.GetComponent<CardComponentNew>().Card = card;
+                RectTransform component2 = CardTool.GetComponent<RectTransform>();
+                component2.anchorMin = new Vector2(0.5f, 0.5f);
+                component2.anchorMax = new Vector2(0.5f, 0.5f);
+                component2.SetParent(MainWindow.dragAndDrog.gameObject.transform, false);
+                component2.localScale = new Vector3(2,2,2);
+                component2.anchoredPosition = new Vector2(-500, 0);
+
+                TooltipHoverComponent tooltip = CardTool.GetComponent<TooltipHoverComponent>();
+                TooltipTextValue = tooltip.Text;
+                if (tooltip.AdditionalInfo != null && tooltip.AdditionalInfo.Count > 0)
+                {
+                    foreach(var add in tooltip.AdditionalInfo)
+                    {
+                        TooltipTextValue += "\n\n";
+                        TooltipTextValue += add;
+                    }
+                }
+                Popup(TooltipText.GetComponent<TooltipTextScript>(), MainWindow.dragAndDrog.gameObject, new Vector2(-695, 0));
+            }
+            else
+            {
+                Popup(TooltipText.GetComponent<TooltipTextScript>(), MainWindow.dragAndDrog.gameObject, new Vector2(-440, 0));
+            }
+            component.SetText(TooltipTextValue, new TooltipTextScript.PopupTextLayoutInfo() { minWidth = 165 });
             component.SetFontSize(18);
-            Popup(TooltipText.GetComponent<TooltipTextScript>(), MainWindow.dragAndDrog.gameObject, new Vector2(-440, 0));
             initialized = true;
         }
         public void Popup(TooltipTextScript anchorObject, GameObject ui, Vector2 offset)
@@ -75,6 +109,14 @@ namespace UnityGameUI
             component2.SetParent(sceneDialogCanvas.transform, false);
             component2.anchoredPosition = new Vector2(vector.x, vector.y) + vector2;
 
+        }
+        public void OnDestroy()
+        {
+            UnityEngine.Object.Destroy(TooltipText);
+            if(CardTool != null)
+            {
+                UnityEngine.Object.Destroy(CardTool);
+            }
         }
     }
 }
